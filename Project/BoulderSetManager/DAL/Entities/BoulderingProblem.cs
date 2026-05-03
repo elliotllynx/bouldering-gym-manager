@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace DAL.Entities
+{
+    public class BoulderingProblem
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Grade { get; set; }
+        public string Type { get; set; }
+        public string Author { get; set; }
+        public DateTime BuiltDate { get; set; }
+        public DateTime RetireDate { get; set; }
+        public int SectionId { get; set; }       // which section this belongs to
+    }
+}

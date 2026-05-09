@@ -14,6 +14,6 @@ namespace DAL.Entities
         public string Author { get; set; }
         public DateTime BuiltDate { get; set; }
         public DateTime RetireDate { get; set; }
-        public int SectionId { get; set; }       // which section this belongs to
+        public int WallId { get; set; }       // which section this belongs to
     }
 }

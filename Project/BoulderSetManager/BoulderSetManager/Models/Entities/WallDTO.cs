@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BoulderSetManager.Models.Entities
 {
-    public class SectionDTO
+    public class WallDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

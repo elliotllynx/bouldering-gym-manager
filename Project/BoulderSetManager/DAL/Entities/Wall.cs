@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DAL.Entities
 {
-    public class Section
+    public class Wall
     {
         [Key]
         public int Id { get; set; }

@@ -8,8 +8,8 @@
     Title="BoulderSetManager">
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:NewPage1}"
-        Route="NewPage1" />
+        Title="Bouldering Gym Route Setting Manager"
+        ContentTemplate="{DataTemplate views:SelectGym}"
+        Route="SelectGym" />
 
 </Shell>

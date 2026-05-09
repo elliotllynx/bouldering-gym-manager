@@ -5,21 +5,16 @@ using DAL.Entities;
 using DAL;
 using BoulderSetManager.Models.Entities;
 using SQLitePCL;
+using Microsoft.EntityFrameworkCore;
 
 namespace BoulderSetManager.Models.Services
 {
     public class GymService
     {
-        private readonly GymDbContext _context;
-
-        public GymService(GymDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<List<GymDTO>> GetAllGyms()
         {
-            return await _context.Gyms
+            using var db = new GymDbContext();
+            return await db.Gyms
                 .Select(g => new GymDTO
                 {
                     Id = g.Id,
@@ -31,22 +26,24 @@ namespace BoulderSetManager.Models.Services
 
         public async Task CreateGym(GymDTO dto)
         {
+            using var db = new GymDbContext();
             var gym = new Gym
             {
                 Name = dto.Name,
                 Location = dto.Location
             };
-            _context.Gyms.Add(gym);
-            await _context.SaveChangesAsync();
+            db.Gyms.Add(gym);
+            await db.SaveChangesAsync();
         }
 
         public async Task DeleteGym(int gymId)
         {
-            var gym = await _context.Gyms.FindAsync(gymId);
+            using var db = new GymDbContext();
+            var gym = await db.Gyms.FindAsync(gymId);
             if (gym != null)
             {
-                _context.Gyms.Remove(gym);
-                await _context.SaveChangesAsync();
+                db.Gyms.Remove(gym);
+                await db.SaveChangesAsync();
             }
         }
     }

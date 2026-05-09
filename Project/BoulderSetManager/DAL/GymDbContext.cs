@@ -10,8 +10,8 @@ namespace DAL
     public class GymDbContext : DbContext
     { 
         public DbSet<Gym> Gyms { get; set; }
-        public DbSet<Entities.Wall> Sections { get; set; }
-        public DbSet<BoulderingProblem> Boulders { get; set; }
+        public DbSet<Entities.Wall> Walls { get; set; }
+        public DbSet<BoulderingProblem> BoulderingProblems { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder options) 
             => options.UseSqlite("Data Source=gym.db");
 

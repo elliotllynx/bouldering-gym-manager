@@ -1,8 +1,8 @@
 namespace BoulderSetManager.Views;
 
-public partial class NewPage1 : ContentPage
+public partial class SelectGym : ContentPage
 {
-	public NewPage1()
+	public SelectGym()
 	{
 		InitializeComponent();
 	}

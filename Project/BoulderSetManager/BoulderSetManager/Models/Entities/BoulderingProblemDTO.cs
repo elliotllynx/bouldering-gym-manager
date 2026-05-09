@@ -12,6 +12,6 @@ namespace BoulderSetManager.Models.Entities
         public string Author { get; set; }
         public DateTime BuiltDate { get; set; }
         public DateTime RetireDate { get; set; }
-        public int SectionId { get; set; }
+        public int WallId { get; set; }
    }
 }

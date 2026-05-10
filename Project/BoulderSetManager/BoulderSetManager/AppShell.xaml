@@ -9,7 +9,7 @@
 
     <ShellContent
         Title="Bouldering Gym Route Setting Manager"
-        ContentTemplate="{DataTemplate views:SelectGym}"
+        ContentTemplate="{DataTemplate views:SelectGymView}"
         Route="SelectGym" />
 
 </Shell>

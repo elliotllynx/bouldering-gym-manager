@@ -36,32 +36,70 @@
             </HorizontalStackLayout>
 
             <!-- Row 1: Filtering -->
-            <HorizontalStackLayout Grid.Row="1" Padding="16,0" >
-                <Label Grid.Column="0" Text="Filter Boulders:"
+            <HorizontalStackLayout Grid.Row="1" Padding="16,0">
+                <Label Text="Filter Boulders:"
                        VerticalOptions="Center"
                        Padding="15,0,15,0"/>
 
-                <Label Grid.Column="1" Text="Grade:"
+                <Label Text="Wall:"
                        VerticalOptions="Center"
                        Padding="15,0,0,0"/>
-                <Picker ></Picker>
+                <Picker ItemsSource="{Binding WallPicker}"
+                        SelectedItem="{Binding FilterWall}"
+                        ItemDisplayBinding="{Binding Name}"/>
 
-                <Label Grid.Column="1" Text="Wall:"
-                       VerticalOptions="Center"
-                       Padding="15,0,0,0"/>
-                <Picker ></Picker>
+                <Button Text="All Walls"
+                        BackgroundColor="Transparent"
+                        TextColor="DarkGray"
+                        BorderColor="DarkGray"
+                        BorderWidth="1"
+                        Margin="10,0,0,0"
+                        CornerRadius="6"
+                        Command="{Binding ClearFilterWallCommand}"/>
 
-                <Label Grid.Column="1" Text="Retire in:"
+                <Label Text="Grade:"
                        VerticalOptions="Center"
                        Padding="15,0,0,0"/>
-                <Entry ></Entry>
-                <Label Grid.Column="1" Text="days"
+                <Entry Text="{Binding FilterGrade}"
+                       Placeholder="e.g. 6A"
+                       WidthRequest="80"/>
+
+                <Label Text="Type:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Entry Text="{Binding FilterType}"
+                       Placeholder="e.g. Crimpy"
+                       WidthRequest="100"/>
+
+                <Label Text="Author:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Entry Text="{Binding FilterAuthor}"
+                       Placeholder="Author"
+                       WidthRequest="100"/>
+
+                <Label Text="Retire in:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Entry Text="{Binding FilterRetireInDays}"
+                       Placeholder="days"
+                       Keyboard="Numeric"
+                       WidthRequest="60"/>
+                <Label Text="days"
                        VerticalOptions="Center"/>
 
-                <Label Grid.Column="1" Text="Type:"
-                       VerticalOptions="Center"
-                       Padding="15,0,0,0"/>
-                <Picker ></Picker>
+                <Button Text="Filter"
+                        BackgroundColor="Turquoise"
+                        TextColor="Black"
+                        CornerRadius="6"
+                        Margin="15,0,0,0"
+                        Command="{Binding ApplyFilterCommand}"/>
+                <Button Text="Reset"
+                        BackgroundColor="#444"
+                        TextColor="White"
+                        CornerRadius="6"
+                        Margin="5,0,0,0"
+                        Command="{Binding ResetFilterCommand}"/>
             </HorizontalStackLayout>
 
             <!-- Row 2: Error Message -->

@@ -20,12 +20,15 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial int GymId { get; set; }
         [ObservableProperty] public partial GymDTO SelectedGym { get; set; } = null;
         [ObservableProperty] public partial ObservableCollection<WallDTO> Walls { get; set; } = new();
+        // because for maui picker element i need to reload each time walls are changed
+        [ObservableProperty] public partial ObservableCollection<WallDTO> WallPicker { get; set; } = new();
 
         async partial void OnGymIdChanged(int value)
         {
             var gymService = new GymService();
             SelectedGym = await gymService.GetGym(value);
             await LoadWalls(value);
+            WallPicker = new ObservableCollection<WallDTO>(Walls);
         }
 
         private async Task LoadWalls(int gymId)
@@ -38,6 +41,52 @@ namespace BoulderSetManager.ViewModels
         {
             await Shell.Current.GoToAsync("..");
         }
+
+        // filtering management:
+        [ObservableProperty] public partial WallDTO FilterWall { get; set; } = null;
+        [ObservableProperty] public partial string FilterGrade { get; set; } = string.Empty;
+        [ObservableProperty] public partial string FilterType { get; set; } = string.Empty;
+        [ObservableProperty] public partial string FilterAuthor { get; set; } = string.Empty;
+        [ObservableProperty] public partial int FilterRetireInDays { get; set; } = 0;
+
+        [RelayCommand]
+        private async Task ApplyFilter()
+        {
+            await LoadWalls(GymId);
+
+            if (FilterWall != null)
+            {
+                var toRemove = Walls.Where(w => w.Id != FilterWall.Id).ToList();
+                foreach (var w in toRemove) Walls.Remove(w);
+            }
+
+            foreach (var wall in Walls)
+            {
+                var filtered = wall.Boulders.Where(b =>
+                    (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
+                    (string.IsNullOrEmpty(FilterType) || b.Type == FilterType) &&
+                    (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
+                    (FilterRetireInDays == 0 || b.DaysLeft <= FilterRetireInDays)
+                ).ToList();
+
+                wall.Boulders = new ObservableCollection<BoulderingProblemDTO>(filtered);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ResetFilter()
+        {
+            FilterWall = null;
+            FilterGrade = string.Empty;
+            FilterType = string.Empty;
+            FilterAuthor = string.Empty;
+            FilterRetireInDays = 0;
+            await LoadWalls(GymId);
+        }
+
+        [RelayCommand]
+        private void ClearFilterWall() => FilterWall = null;
+
         public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible;
 
         // wall CRUD management:
@@ -92,6 +141,7 @@ namespace BoulderSetManager.ViewModels
             };
             wall.Id = await _wallService.CreateWall(wall);
             Walls.Add(wall);
+            WallPicker.Add(wall);
             HideWallForm();
         }
 
@@ -107,6 +157,7 @@ namespace BoulderSetManager.ViewModels
 
             SelectedWall.Name = NewWallName;
             await _wallService.UpdateWall(SelectedWall.Id, NewWallName);
+            WallPicker = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(GymId));
             HideWallForm();
         }
 
@@ -115,6 +166,7 @@ namespace BoulderSetManager.ViewModels
         {
             await _wallService.DeleteWall(wall.Id);
             Walls.Remove(wall);
+            WallPicker.Remove(wall);
         }
 
         // boulder CRUD management

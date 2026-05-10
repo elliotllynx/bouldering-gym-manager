@@ -45,6 +45,7 @@
                     TextColor="Black"
                     CornerRadius="8"
                     Command="{Binding ShowCreateFormCommand}" />
+            <Label IsVisible="{Binding HasSelectError}" Text="{Binding SelectErrorMessage}" TextColor="Red"></Label>
         </VerticalStackLayout>
 
 
@@ -79,7 +80,7 @@
                         BackgroundColor="Transparent"
                         TextColor="Gray"
                         Command="{Binding HideFormCommand}" />
-                <Label IsVisible="{Binding HasError}" Text="{Binding ErrorMessage}" TextColor="DarkRed"></Label>
+                <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" TextColor="DarkRed"></Label>
             </VerticalStackLayout>
         </Frame>
 
@@ -101,7 +102,7 @@
                     <Entry Grid.Row="0" Grid.Column="1" Placeholder="{Binding SelectedGym.Name}" TextColor="Black" Text="{Binding NewGymName}" />
 
                     <Label Grid.Row="1" Grid.Column="0" Text="Gym Location:" TextColor="Black" VerticalOptions="Center"/>
-                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="{Binding SelectedGym.Name}" TextColor="Black" Text="{Binding NewGymLocation}" />
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="{Binding SelectedGym.Location}" TextColor="Black" Text="{Binding NewGymLocation}" />
                 </Grid>
                 <Button Text="Modify Gym"
                         BackgroundColor="Turquoise"
@@ -110,7 +111,7 @@
                         BackgroundColor="Transparent"
                         TextColor="Gray"
                         Command="{Binding HideFormCommand}" />
-                <Label IsVisible="{Binding HasError}" Text="{Binding ErrorMessage}" TextColor="DarkRed"></Label>
+                <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" TextColor="DarkRed"></Label>
             </VerticalStackLayout>
         </Frame>
     </Grid>

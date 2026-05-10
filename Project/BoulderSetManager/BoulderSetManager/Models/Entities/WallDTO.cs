@@ -9,5 +9,6 @@ namespace BoulderSetManager.Models.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public int GymId { get; set; }
+        public List<BoulderingProblemDTO> Boulders { get; set; } = new();
     }
 }

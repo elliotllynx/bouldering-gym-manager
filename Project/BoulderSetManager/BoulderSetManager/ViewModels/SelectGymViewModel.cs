@@ -16,6 +16,8 @@ namespace BoulderSetManager.ViewModels
         private readonly GymService _gymService = new GymService();
         [ObservableProperty] public partial ObservableCollection<GymDTO> Gyms { get; set; }
         [ObservableProperty] public partial GymDTO SelectedGym { get; set; } = null;
+        [ObservableProperty] public partial bool HasSelectError { get; set; } = false;
+        [ObservableProperty] public partial string SelectErrorMessage { get; set; } = string.Empty;
 
         public SelectGymViewModel()
         {
@@ -31,13 +33,25 @@ namespace BoulderSetManager.ViewModels
         [RelayCommand]
         public async Task SelectGym()
         {
-            if (SelectedGym == null) return;
-            await Shell.Current.GoToAsync("MainView");
+            HasSelectError = false;
+            if (SelectedGym == null)
+            {
+                HasSelectError = true;
+                SelectErrorMessage = "Please select gym";
+                return;
+            }
+            await Shell.Current.GoToAsync($"MainView?gymId={SelectedGym.Id}");
         }
         [RelayCommand]
         public async Task DeleteGym()
         {
-            if (SelectedGym == null) return;
+            HasSelectError = false;
+            if (SelectedGym == null)
+            {
+                HasSelectError = true;
+                SelectErrorMessage = "Please select gym to delete";
+                return;
+            }
             await _gymService.DeleteGym(SelectedGym.Id);
             Gyms.Remove(SelectedGym);
             SelectedGym = null;
@@ -48,8 +62,8 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial bool IsModifyFormVisible { get; set; } = false;
         [ObservableProperty] public partial string NewGymName { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewGymLocation { get; set; } = string.Empty;
-        [ObservableProperty] public partial bool HasError { get; set; } = false;
-        [ObservableProperty] public partial string ErrorMessage { get; set; } = string.Empty;
+        [ObservableProperty] public partial bool HasInputError { get; set; } = false;
+        [ObservableProperty] public partial string InputErrorMessage { get; set; } = string.Empty;
 
 
         [RelayCommand]
@@ -62,6 +76,13 @@ namespace BoulderSetManager.ViewModels
         [RelayCommand]
         private void ShowModifyForm()
         {
+            HasSelectError = false;
+            if (SelectedGym == null)
+            {
+                HasSelectError = true;
+                SelectErrorMessage = "Please select gym to modify";
+                return;
+            }
             IsFormVisible = true;
             IsModifyFormVisible = true;
         }
@@ -74,19 +95,19 @@ namespace BoulderSetManager.ViewModels
             IsModifyFormVisible = false;
             NewGymName = string.Empty;
             NewGymLocation = string.Empty;
-            HasError = false;
+            HasInputError = false;
         }
         
 
         [RelayCommand]
         private async Task CreateGym()
         {
-            HasError = false;
+            HasInputError = false;
             if (string.IsNullOrWhiteSpace(NewGymName)
                 || string.IsNullOrWhiteSpace(NewGymLocation))
             {
-                ErrorMessage = "Both Name and Location is required.";
-                HasError = true;
+                InputErrorMessage = "Both Name and Location is required.";
+                HasInputError = true;
                 return;
             }
             await _gymService.CreateGym(NewGymName, NewGymLocation);
@@ -97,12 +118,12 @@ namespace BoulderSetManager.ViewModels
         [RelayCommand]
         private async Task ModifyGym()
         {
-            HasError = false;
+            HasInputError = false;
             if (string.IsNullOrWhiteSpace(NewGymName)
                 && string.IsNullOrWhiteSpace(NewGymLocation))
             {
-                ErrorMessage = "New Name or Location is required.";
-                HasError = true;
+                InputErrorMessage = "New Name or Location is required.";
+                HasInputError = true;
                 return;
             }
 

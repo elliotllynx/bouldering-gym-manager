@@ -4,7 +4,6 @@ using System.Text;
 using DAL.Entities;
 using DAL;
 using BoulderSetManager.Models.Entities;
-using SQLitePCL;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoulderSetManager.Models.Services
@@ -53,6 +52,21 @@ namespace BoulderSetManager.Models.Services
                 if (!string.IsNullOrWhiteSpace(location)) gym.Location = location;
                 await db.SaveChangesAsync();
             }
+        }
+        public async Task<GymDTO> GetGym(int id)
+        {
+            using var db = new GymDbContext();
+            var gym = await db.Gyms.FindAsync(id);
+            if (gym != null)
+            {
+                return new GymDTO
+                {
+                    Id = gym.Id,
+                    Name = gym.Name,
+                    Location = gym.Location
+                };
+            }
+            return null;
         }
     }
 }

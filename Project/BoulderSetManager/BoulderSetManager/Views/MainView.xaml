@@ -10,132 +10,231 @@
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto, Auto, *,Auto">
+    <Grid>
+        <Grid RowDefinitions="Auto, Auto, Auto, *,Auto">
 
-        <!-- Row 0: Top bar -->
-        <HorizontalStackLayout Grid.Row="0" Padding="16,0" >
-            <Button Grid.Column="0" Text="← Back"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    Command="{Binding GoBackCommand}"/>
-            <BoxView WidthRequest="1" 
-                     Margin="10"
-                     BackgroundColor="Gray" 
-                     VerticalOptions="Fill"/>
-            <Label Grid.Column="1" Text="Gym:"
-                   Margin="10"/>
-            <Label Grid.Column="1" Text="{Binding SelectedGym.DisplayName}"
-                   FontSize="20"
-                   FontAttributes="Bold"/>
-        </HorizontalStackLayout>
+            <!-- Row 0: Gym Selection -->
+            <HorizontalStackLayout Grid.Row="0" Padding="16,0" >
+                <Button Grid.Column="0" Text="← Back"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        Command="{Binding GoBackCommand}"/>
+                <BoxView WidthRequest="1" 
+                         Margin="10"
+                         BackgroundColor="Gray" 
+                         VerticalOptions="Fill"/>
+                <Label Grid.Column="1" Text="Gym:"
+                       VerticalOptions="Center"
+                       Padding="10,0,0,0"/>
+                <Label Grid.Column="1" Text="{Binding SelectedGym.DisplayName}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Padding="10,0,0,0"/>
 
-        <HorizontalStackLayout Grid.Row="1" Padding="16,0" >
-            <Label Grid.Column="0" Text="Filter Boulders:" Margin="10"/>
-            
-            <Label Grid.Column="1" Text="Gym:"/>
-            <Label Grid.Column="1" Text="{Binding SelectedGym.DisplayName}"
-                   FontSize="20"
-                   FontAttributes="Bold"/>
-        </HorizontalStackLayout>
+            </HorizontalStackLayout>
 
-        <!-- Row 1: Main list -->
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Walls}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="entities:WallDTO">
-                    <VerticalStackLayout Padding="12,8">
+            <!-- Row 1: Filtering -->
+            <HorizontalStackLayout Grid.Row="1" Padding="16,0" >
+                <Label Grid.Column="0" Text="Filter Boulders:"
+                       VerticalOptions="Center"
+                       Padding="15,0,15,0"/>
 
-                        <!-- Wall header -->
-                        <Grid ColumnDefinitions="*,Auto,Auto,Auto"
-                              BackgroundColor="#2a2a2a"
-                              Padding="12,8">
-                            <Label Grid.Column="0"
-                                   Text="{Binding Name}"
-                                   FontAttributes="Bold"
-                                   FontSize="16"
-                                   TextColor="White"
-                                   VerticalOptions="Center"/>
-                            <Button Grid.Column="1"
-                                    Text="+ Boulder"
-                                    BackgroundColor="Turquoise"
-                                    TextColor="Black"
-                                    CornerRadius="6"
-                                    Padding="8,4"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowAddBoulderCommand}"
-                                    CommandParameter="{Binding Id}"/>
-                            <Button Grid.Column="2"
-                                    Text="Edit"
-                                    BackgroundColor="#444"
-                                    TextColor="White"
-                                    CornerRadius="6"
-                                    Padding="8,4"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowEditWallCommand}"
-                                    CommandParameter="{Binding .}"/>
-                            <Button Grid.Column="3"
-                                    Text="Delete"
-                                    BackgroundColor="#c0392b"
-                                    TextColor="White"
-                                    CornerRadius="6"
-                                    Padding="8,4"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=DeleteWallCommand}"
-                                    CommandParameter="{Binding Id}"/>
-                        </Grid>
+                <Label Grid.Column="1" Text="Grade:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Picker ></Picker>
 
-                        <!-- Boulder column headers -->
-                        <Grid ColumnDefinitions="*,*,*,*,*,Auto,Auto"
-                              Padding="12,4"
-                              BackgroundColor="#1e1e1e">
-                            <Label Grid.Column="0" Text="Grade" TextColor="Gray" FontSize="12"/>
-                            <Label Grid.Column="1" Text="Type" TextColor="Gray" FontSize="12"/>
-                            <Label Grid.Column="2" Text="Author" TextColor="Gray" FontSize="12"/>
-                            <Label Grid.Column="3" Text="Built" TextColor="Gray" FontSize="12"/>
-                            <Label Grid.Column="4" Text="Retire" TextColor="Gray" FontSize="12"/>
-                        </Grid>
+                <Label Grid.Column="1" Text="Wall:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Picker ></Picker>
 
-                        <!-- Boulder rows -->
-                        <CollectionView ItemsSource="{Binding Boulders}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="entities:BoulderingProblemDTO">
-                                    <Grid ColumnDefinitions="*,*,*,*,*,Auto,Auto"
-                                          Padding="12,6">
-                                        <Label Grid.Column="0" Text="{Binding Grade}" TextColor="White"/>
-                                        <Label Grid.Column="1" Text="{Binding Type}" TextColor="White"/>
-                                        <Label Grid.Column="2" Text="{Binding Author}" TextColor="White"/>
-                                        <Label Grid.Column="3" Text="{Binding BuiltDate, StringFormat='{0:dd.MM.yy}'}" TextColor="White"/>
-                                        <Label Grid.Column="4" Text="{Binding RetireDate, StringFormat='{0:dd.MM.yy}'}" TextColor="White"/>
-                                        <Button Grid.Column="5"
-                                                Text="Edit"
-                                                BackgroundColor="#444"
-                                                TextColor="White"
-                                                CornerRadius="6"
-                                                Padding="6,2"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowEditBoulderCommand}"
-                                                CommandParameter="{Binding .}"/>
-                                        <Button Grid.Column="6"
-                                                Text="Delete"
-                                                BackgroundColor="#c0392b"
-                                                TextColor="White"
-                                                CornerRadius="6"
-                                                Padding="6,2"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=DeleteBoulderCommand}"
-                                                CommandParameter="{Binding Id}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                <Label Grid.Column="1" Text="Retire in:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Entry ></Entry>
+                <Label Grid.Column="1" Text="days"
+                       VerticalOptions="Center"/>
 
-                    </VerticalStackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                <Label Grid.Column="1" Text="Type:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Picker ></Picker>
+            </HorizontalStackLayout>
 
-        <!-- Row 2: Add wall button -->
-        <Button Grid.Row="2"
-                Text="+ Add Wall"
-                BackgroundColor="Turquoise"
-                TextColor="Black"
-                CornerRadius="8"
-                Margin="16"
-                Command="{Binding ShowAddWallCommand}"/>
+            <!-- Row 2: Error Message -->
+            <Label Grid.Row="2" 
+                   Text="{Binding ErrorMessage}" 
+                   TextColor="Red" FontSize="12"
+                   IsVisible="{Binding HasError}"/>
 
+
+            <!-- Row 3: Boulder List View -->
+            <ScrollView Grid.Row="3"
+                        HorizontalScrollBarVisibility="Always"
+                        VerticalScrollBarVisibility="Always"
+                        Orientation="Both">
+
+                <!-- Following CollectionView xaml made with the help of ClaudeAI -->
+                <CollectionView ItemsSource="{Binding Walls}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="entities:WallDTO">
+                            <VerticalStackLayout Padding="12,8">
+
+                                <!-- Wall header -->
+                                <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                                      BackgroundColor="#2a2a2a"
+                                      Padding="12,8">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Name}"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"/>
+                                    <Button Grid.Column="1"
+                                            Text="+ Boulder"
+                                            BackgroundColor="Turquoise"
+                                            TextColor="Black"
+                                            CornerRadius="6"
+                                            Padding="8,4"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowAddBoulderCommand}"
+                                            CommandParameter="{Binding Id}"/>
+                                    <Button Grid.Column="2"
+                                            Text="Edit"
+                                            BackgroundColor="#444"
+                                            TextColor="White"
+                                            CornerRadius="6"
+                                            Padding="8,4"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowEditWallCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    <Button Grid.Column="3"
+                                            Text="Delete"
+                                            BackgroundColor="#c0392b"
+                                            TextColor="White"
+                                            CornerRadius="6"
+                                            Padding="8,4"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=DeleteWallCommand}"
+                                            CommandParameter="{Binding Id}"/>
+                                </Grid>
+
+                                <!-- Boulder column headers -->
+                                <Grid ColumnDefinitions="*,*,*,*,*,Auto,Auto"
+                                      Padding="12,4"
+                                      BackgroundColor="#1e1e1e">
+                                    <Label Grid.Column="0" Text="Grade" TextColor="Gray" FontSize="12"/>
+                                    <Label Grid.Column="1" Text="Type" TextColor="Gray" FontSize="12"/>
+                                    <Label Grid.Column="2" Text="Author" TextColor="Gray" FontSize="12"/>
+                                    <Label Grid.Column="3" Text="Built" TextColor="Gray" FontSize="12"/>
+                                    <Label Grid.Column="4" Text="Retire" TextColor="Gray" FontSize="12"/>
+                                </Grid>
+
+                                <!-- Boulder rows -->
+                                <CollectionView ItemsSource="{Binding Boulders}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="entities:BoulderingProblemDTO">
+                                            <Grid ColumnDefinitions="*,*,*,*,*,Auto,Auto"
+                                                  Padding="12,6">
+                                                <Label Grid.Column="0" Text="{Binding Grade}" TextColor="White"/>
+                                                <Label Grid.Column="1" Text="{Binding Type}" TextColor="White"/>
+                                                <Label Grid.Column="2" Text="{Binding Author}" TextColor="White"/>
+                                                <Label Grid.Column="3" Text="{Binding BuiltDate, StringFormat='{0:dd.MM.yy}'}" TextColor="White"/>
+                                                <Label Grid.Column="4" Text="{Binding RetireDate, StringFormat='{0:dd.MM.yy}'}" TextColor="White"/>
+                                                <Button Grid.Column="5"
+                                                        Text="Edit"
+                                                        BackgroundColor="#444"
+                                                        TextColor="White"
+                                                        CornerRadius="6"
+                                                        Padding="6,2"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowEditBoulderCommand}"
+                                                        CommandParameter="{Binding .}"/>
+                                                <Button Grid.Column="6"
+                                                        Text="Delete"
+                                                        BackgroundColor="#c0392b"
+                                                        TextColor="White"
+                                                        CornerRadius="6"
+                                                        Padding="6,2"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=DeleteBoulderCommand}"
+                                                        CommandParameter="{Binding Id}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+
+            <!-- Row 4: Add wall button -->
+            <Button Grid.Row="4"
+                    Text="+ Add Wall"
+                    BackgroundColor="Turquoise"
+                    CornerRadius="8"
+                    Margin="16"
+                    WidthRequest="200"
+                    HorizontalOptions="Start"
+                    Command="{Binding ShowAddWallCommand}"/>
+        </Grid>
+
+
+    <BoxView Color="Black"
+             Opacity="0.5"
+             IsVisible="{Binding IsPopUpVisible}" />
+
+        <Frame IsVisible="{Binding IsAddWallVisible}"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="300"
+               Padding="24"
+               CornerRadius="12"
+               BackgroundColor="White">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Create New Wall"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="Black"/>
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" ColumnSpacing="8" RowSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" Text="Wall Name:" TextColor="Black" VerticalOptions="Center"/>
+                        <Entry Grid.Row="0" Grid.Column="1" Placeholder="Gym name" TextColor="Black" Text="{Binding NewWallName}" />
+                    </Grid>
+                    <Button Text="Add Wall"
+                            BackgroundColor="Turquoise"
+                            Command="{Binding AddWallCommand}" />
+                    <Button Text="Cancel"
+                            BackgroundColor="Transparent"
+                            TextColor="Gray"
+                            Command="{Binding HideWallFormCommand}" />
+                    <Label IsVisible="{Binding HasWallInputError}" Text="{Binding WallInputErrorMessage}" TextColor="DarkRed"></Label>
+                </VerticalStackLayout>
+        </Frame>
+
+        <Frame IsVisible="{Binding IsEditWallVisible}"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="300"
+               Padding="24"
+               CornerRadius="12"
+               BackgroundColor="White">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Create New Wall"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="Black"/>
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" ColumnSpacing="8" RowSpacing="8">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Wall Name:" TextColor="Black" VerticalOptions="Center"/>
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="{Binding SelectedWall.Name}" TextColor="Black" Text="{Binding NewWallName}" />
+                </Grid>
+                <Button Text="Edit"
+                        BackgroundColor="Turquoise"
+                        Command="{Binding EditWallCommand}" />
+                <Button Text="Cancel"
+                        BackgroundColor="Transparent"
+                        TextColor="Gray"
+                        Command="{Binding HideWallFormCommand}" />
+                <Label IsVisible="{Binding HasWallInputError}" Text="{Binding WallInputErrorMessage}" TextColor="DarkRed"></Label>
+            </VerticalStackLayout>
+        </Frame>
     </Grid>
 </ContentPage>

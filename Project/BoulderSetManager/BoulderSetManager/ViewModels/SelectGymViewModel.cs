@@ -29,9 +29,10 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
-        public void SelectGym()
+        public async Task SelectGym()
         {
-
+            if (SelectedGym == null) return;
+            await Shell.Current.GoToAsync("MainView");
         }
         [RelayCommand]
         public async Task DeleteGym()
@@ -43,6 +44,8 @@ namespace BoulderSetManager.ViewModels
         }
 
         [ObservableProperty] public partial bool IsFormVisible { get; set; }  = false;
+        [ObservableProperty] public partial bool IsCreateFormVisible { get; set; } = false;
+        [ObservableProperty] public partial bool IsModifyFormVisible { get; set; } = false;
         [ObservableProperty] public partial string NewGymName { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewGymLocation { get; set; } = string.Empty;
         [ObservableProperty] public partial bool HasError { get; set; } = false;
@@ -50,10 +53,30 @@ namespace BoulderSetManager.ViewModels
 
 
         [RelayCommand]
-        private void ShowCreateForm() => IsFormVisible = true;
+        private void ShowCreateForm()
+        {
+            IsFormVisible = true;
+            IsCreateFormVisible = true;
+        }
 
         [RelayCommand]
-        private void HideCreateForm() => IsFormVisible = false;
+        private void ShowModifyForm()
+        {
+            IsFormVisible = true;
+            IsModifyFormVisible = true;
+        }
+
+        [RelayCommand]
+        private void HideForm()
+        {
+            IsFormVisible = false;
+            IsCreateFormVisible = false;
+            IsModifyFormVisible = false;
+            NewGymName = string.Empty;
+            NewGymLocation = string.Empty;
+            HasError = false;
+        }
+        
 
         [RelayCommand]
         private async Task CreateGym()
@@ -66,20 +89,26 @@ namespace BoulderSetManager.ViewModels
                 HasError = true;
                 return;
             }
+            await _gymService.CreateGym(NewGymName, NewGymLocation);
+            await LoadGyms();
+            HideForm();
+        }
 
-            var dto = new GymDTO
+        [RelayCommand]
+        private async Task ModifyGym()
+        {
+            HasError = false;
+            if (string.IsNullOrWhiteSpace(NewGymName)
+                && string.IsNullOrWhiteSpace(NewGymLocation))
             {
-                Name = NewGymName,
-                Location = NewGymLocation
-            };
+                ErrorMessage = "New Name or Location is required.";
+                HasError = true;
+                return;
+            }
 
-            await _gymService.CreateGym(dto);
-
-            Gyms.Add(dto);
-
-            IsFormVisible = false;
-            NewGymName = string.Empty;
-            NewGymLocation = string.Empty;
+            await _gymService.UpdateGym(SelectedGym.Id, NewGymName, NewGymLocation);
+            await LoadGyms();
+            HideForm();
         }
     }
 }

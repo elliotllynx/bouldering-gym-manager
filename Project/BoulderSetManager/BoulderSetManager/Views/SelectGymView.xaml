@@ -23,7 +23,7 @@
                    TextColor="White" />
             <Picker ItemsSource="{Binding Gyms}"
                     SelectedItem="{Binding SelectedGym}"
-                    ItemDisplayBinding="{Binding Name}"
+                    ItemDisplayBinding="{Binding DisplayName}"
                     TextColor="White" />
             <Button Text="Select Gym"
                     BackgroundColor="Turquoise"
@@ -35,6 +35,11 @@
                     TextColor="Black"
                     CornerRadius="8"
                     Command="{Binding DeleteGymCommand}" />
+            <Button Text="Modify Gym"
+                    BackgroundColor="LightGray"
+                    TextColor="Black"
+                    CornerRadius="8"
+                    Command="{Binding ShowModifyFormCommand}" />
             <Button Text="Create New Gym"
                     BackgroundColor="LightGray"
                     TextColor="Black"
@@ -42,11 +47,12 @@
                     Command="{Binding ShowCreateFormCommand}" />
         </VerticalStackLayout>
 
+
         <BoxView Color="Black"
                  Opacity="0.5"
                  IsVisible="{Binding IsFormVisible}" />
 
-        <Frame IsVisible="{Binding IsFormVisible}"
+        <Frame IsVisible="{Binding IsCreateFormVisible}"
                VerticalOptions="Center"
                HorizontalOptions="Center"
                WidthRequest="300"
@@ -72,7 +78,38 @@
                 <Button Text="Cancel"
                         BackgroundColor="Transparent"
                         TextColor="Gray"
-                        Command="{Binding HideCreateFormCommand}" />
+                        Command="{Binding HideFormCommand}" />
+                <Label IsVisible="{Binding HasError}" Text="{Binding ErrorMessage}" TextColor="DarkRed"></Label>
+            </VerticalStackLayout>
+        </Frame>
+
+        <Frame IsVisible="{Binding IsModifyFormVisible}"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="300"
+               Padding="24"
+               CornerRadius="12"
+               BackgroundColor="White">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Modify Gym"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="Black"/>
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Gym Name:" TextColor="Black" VerticalOptions="Center"/>
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="{Binding SelectedGym.Name}" TextColor="Black" Text="{Binding NewGymName}" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Text="Gym Location:" TextColor="Black" VerticalOptions="Center"/>
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="{Binding SelectedGym.Name}" TextColor="Black" Text="{Binding NewGymLocation}" />
+                </Grid>
+                <Button Text="Modify Gym"
+                        BackgroundColor="Turquoise"
+                        Command="{Binding ModifyGymCommand}" />
+                <Button Text="Cancel"
+                        BackgroundColor="Transparent"
+                        TextColor="Gray"
+                        Command="{Binding HideFormCommand}" />
                 <Label IsVisible="{Binding HasError}" Text="{Binding ErrorMessage}" TextColor="DarkRed"></Label>
             </VerticalStackLayout>
         </Frame>

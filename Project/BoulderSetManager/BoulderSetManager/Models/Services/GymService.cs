@@ -24,14 +24,10 @@ namespace BoulderSetManager.Models.Services
                 .ToListAsync();
         }
 
-        public async Task CreateGym(GymDTO dto)
+        public async Task CreateGym(string name, string location)
         {
             using var db = new GymDbContext();
-            var gym = new Gym
-            {
-                Name = dto.Name,
-                Location = dto.Location
-            };
+            var gym = new Gym { Name = name, Location = location };
             db.Gyms.Add(gym);
             await db.SaveChangesAsync();
         }
@@ -43,6 +39,18 @@ namespace BoulderSetManager.Models.Services
             if (gym != null)
             {
                 db.Gyms.Remove(gym);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateGym(int id, string name, string location)
+        {
+            using var db = new GymDbContext();
+            var gym = await db.Gyms.FindAsync(id);
+            if (gym != null)
+            {
+                if (!string.IsNullOrWhiteSpace(name)) gym.Name = name;
+                if (!string.IsNullOrWhiteSpace(location)) gym.Location = location;
                 await db.SaveChangesAsync();
             }
         }

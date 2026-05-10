@@ -184,7 +184,7 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial string NewType { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewAuthor { get; set; } = string.Empty;
         [ObservableProperty] public partial DateTime NewBuiltDate { get; set; } = DateTime.Today;
-        [ObservableProperty] public partial DateTime NewRetireDate { get; set; } = DateTime.Today.AddDays(30);
+        [ObservableProperty] public partial DateTime NewRetireDate { get; set; } = DateTime.Today.AddMonths(1);
         [ObservableProperty] public partial bool HasBoulderInputError { get; set; } = false;
         [ObservableProperty] public partial string BoulderInputErrorMessage { get; set; } = string.Empty;
 
@@ -192,7 +192,7 @@ namespace BoulderSetManager.ViewModels
         private void ShowAddBoulder(WallDTO wall)
         {
             NewBuiltDate = DateTime.Today;
-            NewRetireDate = DateTime.Today.AddDays(30);
+            NewRetireDate = DateTime.Today.AddMonths(1);
             SelectedWall = wall;
             IsAddBoulderVisible = true;
         }

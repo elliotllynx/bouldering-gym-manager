@@ -308,7 +308,7 @@
                        FontAttributes="Bold"
                        HorizontalOptions="Center"
                        TextColor="Black"/>
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto, Auto, Auto" ColumnSpacing="8" RowSpacing="8">
                     <Label Grid.Row="0" Grid.Column="0" Text="Grade:" TextColor="Black" VerticalOptions="Center"/>
                     <Entry Grid.Row="0" Grid.Column="1" Placeholder="e.g. 6A" TextColor="Black" Text="{Binding NewGrade}"/>
 
@@ -320,9 +320,11 @@
 
                     <Label Grid.Row="3" Grid.Column="0" Text="Built:" TextColor="Black" VerticalOptions="Center"/>
                     <DatePicker Grid.Row="3" Grid.Column="1" TextColor="Black" Date="{Binding NewBuiltDate}"/>
+                    <Label Grid.Row="4" Grid.Column="0" Text="(Today by default)" TextColor="Gray" VerticalOptions="Center"/>
 
-                    <Label Grid.Row="4" Grid.Column="0" Text="Retire:" TextColor="Black" VerticalOptions="Center"/>
-                    <DatePicker Grid.Row="4" Grid.Column="1" TextColor="Black" Date="{Binding NewRetireDate}"/>
+                    <Label Grid.Row="5" Grid.Column="0" Text="Retire:" TextColor="Black" VerticalOptions="Center"/>
+                    <DatePicker Grid.Row="5" Grid.Column="1" TextColor="Black" Date="{Binding NewRetireDate}"/>
+                    <Label Grid.Row="6" Grid.Column="0" Text="1 month from today by default" TextColor="Gray" VerticalOptions="Center"/>
                 </Grid>
                 <Button Text="Add Boulder"
                         BackgroundColor="Turquoise"

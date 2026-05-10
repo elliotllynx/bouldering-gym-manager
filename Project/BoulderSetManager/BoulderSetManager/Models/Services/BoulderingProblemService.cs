@@ -28,7 +28,7 @@ namespace BoulderSetManager.Models.Services
                 .ToListAsync<BoulderingProblemDTO>();
         }
 
-        public async Task CreateBoulder(BoulderingProblemDTO dto)
+        public async Task<int> CreateBoulder(BoulderingProblemDTO dto)
         {
             using var db = new GymDbContext();
             var boulder = new BoulderingProblem
@@ -42,6 +42,7 @@ namespace BoulderSetManager.Models.Services
             };
             db.BoulderingProblems.Add(boulder);
             await db.SaveChangesAsync();
+            return boulder.Id;
         }
 
         public async Task UpdateBoulder(BoulderingProblemDTO dto)

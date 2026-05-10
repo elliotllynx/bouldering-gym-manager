@@ -29,10 +29,10 @@ namespace DAL
             );
 
             modelBuilder.Entity<BoulderingProblem>().HasData(
-                new BoulderingProblem { Id = 1, Grade = "6A", Type = "Crimpy", Author = "Jan", BuiltDate = new DateTime(2025, 1, 1), RetireDate = new DateTime(2025, 4, 1), WallId = 1 },
-                new BoulderingProblem { Id = 2, Grade = "6B+", Type = "Slopey", Author = "Martin", BuiltDate = new DateTime(2025, 1, 15), RetireDate = new DateTime(2025, 4, 15), WallId = 1 },
-                new BoulderingProblem { Id = 3, Grade = "5C", Type = "Dynamic", Author = "Eva", BuiltDate = new DateTime(2025, 2, 1), RetireDate = new DateTime(2025, 5, 1), WallId = 2 },
-                new BoulderingProblem { Id = 4, Grade = "7A", Type = "Pinchy", Author = "Jan", BuiltDate = new DateTime(2025, 2, 10), RetireDate = new DateTime(2025, 5, 10), WallId = 3 }
+                new BoulderingProblem { Id = 1, Grade = "6A", Type = "Crimpy", Author = "Jan", BuiltDate = DateTime.Today.AddDays(-25), RetireDate = DateTime.Today.AddDays(5), WallId = 1 },
+                new BoulderingProblem { Id = 2, Grade = "6B+", Type = "Slopey", Author = "Martin", BuiltDate = DateTime.Today.AddDays(-5), RetireDate = DateTime.Today.AddDays(25), WallId = 2 },
+                new BoulderingProblem { Id = 3, Grade = "5C", Type = "Dynamic", Author = "Eva", BuiltDate = DateTime.Today.AddDays(-15), RetireDate = DateTime.Today.AddDays(15), WallId = 2 },
+                new BoulderingProblem { Id = 4, Grade = "7A", Type = "Pinchy", Author = "Jan", BuiltDate = DateTime.Today.AddDays(-29), RetireDate = DateTime.Today.AddDays(1), WallId = 3 }
             );
         }
 

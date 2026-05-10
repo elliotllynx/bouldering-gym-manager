@@ -38,6 +38,7 @@ namespace BoulderSetManager.ViewModels
         {
             await Shell.Current.GoToAsync("..");
         }
+        public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible;
 
         // wall CRUD management:
 
@@ -48,9 +49,9 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))] 
         public partial bool IsEditWallVisible { get; set; } = false;
-        public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible;
+
         [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
-        [ObservableProperty] public partial WallDTO SelectedWall { get; set; }
+        [ObservableProperty] public partial WallDTO SelectedWall { get; set; } = null;
         [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
         [ObservableProperty] public partial string WallInputErrorMessage { get; set; } = string.Empty;
 
@@ -83,8 +84,14 @@ namespace BoulderSetManager.ViewModels
                 WallInputErrorMessage = "Please input new name.";
                 return;
             }
-            await _wallService.CreateWall(NewWallName, GymId);
-            await LoadWalls(GymId);
+
+            var wall = new WallDTO()
+            {
+                Name = NewWallName,
+                GymId = GymId
+            };
+            wall.Id = await _wallService.CreateWall(wall);
+            Walls.Add(wall);
             HideWallForm();
         }
 
@@ -97,16 +104,151 @@ namespace BoulderSetManager.ViewModels
                 WallInputErrorMessage = "Please input new name.";
                 return;
             }
+
+            SelectedWall.Name = NewWallName;
             await _wallService.UpdateWall(SelectedWall.Id, NewWallName);
-            await LoadWalls(GymId);
             HideWallForm();
         }
 
         [RelayCommand]
-        private async Task DeleteWall(int wallId)
+        private async Task DeleteWall(WallDTO wall)
         {
-            await _wallService.DeleteWall(wallId);
-            await LoadWalls(GymId);
+            await _wallService.DeleteWall(wall.Id);
+            Walls.Remove(wall);
+        }
+
+        // boulder CRUD management
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsAddBoulderVisible { get; set; } = false;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsEditBoulderVisible { get; set; } = false;
+
+        [ObservableProperty] public partial BoulderingProblemDTO SelectedBoulder { get; set; }
+        [ObservableProperty] public partial string NewGrade { get; set; } = string.Empty;
+        [ObservableProperty] public partial string NewType { get; set; } = string.Empty;
+        [ObservableProperty] public partial string NewAuthor { get; set; } = string.Empty;
+        [ObservableProperty] public partial DateTime NewBuiltDate { get; set; } = DateTime.Today;
+        [ObservableProperty] public partial DateTime NewRetireDate { get; set; } = DateTime.Today.AddDays(30);
+        [ObservableProperty] public partial bool HasBoulderInputError { get; set; } = false;
+        [ObservableProperty] public partial string BoulderInputErrorMessage { get; set; } = string.Empty;
+
+        [RelayCommand]
+        private void ShowAddBoulder(WallDTO wall)
+        {
+            NewBuiltDate = DateTime.Today;
+            NewRetireDate = DateTime.Today.AddDays(30);
+            SelectedWall = wall;
+            IsAddBoulderVisible = true;
+        }
+
+        [RelayCommand]
+        private void ShowEditBoulder(BoulderingProblemDTO boulder)
+        {
+            NewBuiltDate = boulder.BuiltDate;
+            NewRetireDate = boulder.RetireDate;
+            SelectedBoulder = boulder;
+            IsEditBoulderVisible = true;
+        }
+
+        [RelayCommand]
+        private void HideBoulderForm()
+        {
+            IsAddBoulderVisible = false;
+            IsEditBoulderVisible = false;
+            NewGrade = string.Empty;
+            NewType = string.Empty;
+            NewAuthor = string.Empty;
+            HasBoulderInputError = false;
+            BoulderInputErrorMessage = string.Empty;
+        }
+
+        [RelayCommand]
+        private async Task AddBoulder()
+        {
+            if (string.IsNullOrWhiteSpace(NewGrade)
+                || string.IsNullOrWhiteSpace(NewType)
+                || string.IsNullOrWhiteSpace(NewAuthor)  )
+            {
+                HasBoulderInputError = true;
+                BoulderInputErrorMessage = "All attributes must be filled in.";
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(NewGrade) && !IsValidGrade(NewGrade))
+            {
+                HasBoulderInputError = true;
+                BoulderInputErrorMessage = "Grade must be in format e.g. 6A or 6A+";
+                return;
+            }
+            if (NewBuiltDate >= NewRetireDate)
+            {
+                HasBoulderInputError = true;
+                BoulderInputErrorMessage = "Built date cannot precede retire date.";
+                return;
+            }
+            var boulder = new BoulderingProblemDTO
+            {
+                Grade = NewGrade,
+                Type = NewType,
+                Author = NewAuthor,
+                BuiltDate = NewBuiltDate,
+                RetireDate = NewRetireDate,
+                WallId = SelectedWall.Id
+            };
+            boulder.Id = await _boulderService.CreateBoulder(boulder);
+            SelectedWall.Boulders.Add(boulder);
+            HideBoulderForm();
+        }
+
+        [RelayCommand]
+        private async Task EditBoulder()
+        {
+            if (string.IsNullOrWhiteSpace(NewGrade)
+                && string.IsNullOrWhiteSpace(NewType)
+                && string.IsNullOrWhiteSpace(NewAuthor)
+                && NewBuiltDate == SelectedBoulder.BuiltDate
+                && NewRetireDate == SelectedBoulder.RetireDate)
+            {
+                HasBoulderInputError = true;
+                BoulderInputErrorMessage = "No changes were made.";
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(NewGrade) && !IsValidGrade(NewGrade))
+            {
+                HasBoulderInputError = true;
+                BoulderInputErrorMessage = "Grade must be in format e.g. 6A or 6A+";
+                return;
+            }
+            if (NewBuiltDate >= NewRetireDate)
+            {
+                HasBoulderInputError = true;
+                BoulderInputErrorMessage = "Built date cannot precede retire date.";
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(NewGrade)) SelectedBoulder.Grade = NewGrade;
+            if (!string.IsNullOrWhiteSpace(NewType)) SelectedBoulder.Type = NewType;
+            if (!string.IsNullOrWhiteSpace(NewAuthor)) SelectedBoulder.Author = NewAuthor;
+            SelectedBoulder.BuiltDate = NewBuiltDate;
+            SelectedBoulder.RetireDate = NewRetireDate;
+            await _boulderService.UpdateBoulder(SelectedBoulder);
+            HideBoulderForm();
+        }
+
+        [RelayCommand]
+        private async Task DeleteBoulder(BoulderingProblemDTO boulder)
+        {
+            await _boulderService.DeleteBoulder(boulder.Id);
+            var wall = Walls.FirstOrDefault(w => w.Id == boulder.WallId);
+            wall?.Boulders.Remove(boulder);
+        }
+        private bool IsValidGrade(string grade)
+        {
+            if (string.IsNullOrWhiteSpace(grade)) return false;
+            var regex = new System.Text.RegularExpressions.Regex(@"^([4-9]|10)[A-C]\+?$");
+            return regex.IsMatch(grade);
         }
     }
 }

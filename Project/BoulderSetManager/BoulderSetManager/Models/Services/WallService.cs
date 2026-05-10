@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using System.Collections.ObjectModel;
 using BoulderSetManager.Models.Entities;
 using DAL;
 using Microsoft.EntityFrameworkCore;
@@ -13,24 +12,44 @@ namespace BoulderSetManager.Models.Services
         public async Task<List<WallDTO>> GetGymWalls(int gymId)
         {
             using var db = new GymDbContext();
-            return await db.Walls
-                .Where(s => s.GymId == gymId)
-                .Select(s => new WallDTO
+            var walls = await db.Walls
+                .Where(w => w.GymId == gymId)
+                .Select(w => new WallDTO
                 {
-                    Id = s.Id,
-                    Name = s.Name,
-                    GymId = s.GymId
+                    Id = w.Id,
+                    Name = w.Name,
+                    GymId = w.GymId,
+                    Boulders = new ObservableCollection<BoulderingProblemDTO>(
+                        db.BoulderingProblems
+                            .Where(b => b.WallId == w.Id)
+                            .Select(b => new BoulderingProblemDTO
+                            {
+                                Id = b.Id,
+                                Grade = b.Grade,
+                                Type = b.Type,
+                                Author = b.Author,
+                                BuiltDate = b.BuiltDate,
+                                RetireDate = b.RetireDate,
+                                WallId = b.WallId
+                            }).ToList())
                 })
-                .ToListAsync<WallDTO>();
+                .ToListAsync();
+            return walls;
         }
 
-        public async Task CreateWall(string name, int gymId)
+        public async Task<int> CreateWall(WallDTO dto)
         {
             using var db = new GymDbContext();
-            var wall = new Wall{ Name = name, GymId = gymId };
+            var wall = new Wall()
+            {
+                Name = dto.Name,
+                GymId = dto.GymId
+            };
             db.Walls.Add(wall);
             await db.SaveChangesAsync();
+            return wall.Id;
         }
+
 
         public async Task UpdateWall(int wallId, string name)
         {

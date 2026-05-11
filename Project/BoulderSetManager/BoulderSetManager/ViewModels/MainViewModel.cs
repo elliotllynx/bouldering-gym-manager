@@ -15,9 +15,9 @@ namespace BoulderSetManager.ViewModels
     {
         private readonly WallService _wallService = new WallService();
         private readonly BoulderingProblemService _boulderService = new BoulderingProblemService();
-    
-        // page load: 
+        public List<string> Styles { get; } = new() { "Slab", "Vertical", "Overhang" };
 
+        // page load: 
         [ObservableProperty] public partial int GymId { get; set; }
         [ObservableProperty] public partial GymDTO SelectedGym { get; set; } = null;
         [ObservableProperty] public partial ObservableCollection<WallDTO> Walls { get; set; } = new();
@@ -29,13 +29,13 @@ namespace BoulderSetManager.ViewModels
             var gymService = new GymService();
             SelectedGym = await gymService.GetGym(value);
             await LoadWalls(value);
+            OnPropertyChanged(nameof(AverageGrade));
             WallPicker = new ObservableCollection<WallDTO>(Walls);
         }
 
         private async Task LoadWalls(int gymId)
         {
             Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId));
-            OnPropertyChanged(nameof(AverageGrade));
         }
 
         [RelayCommand]
@@ -47,7 +47,7 @@ namespace BoulderSetManager.ViewModels
         // filtering management:
         [ObservableProperty] public partial WallDTO FilterWall { get; set; } = null;
         [ObservableProperty] public partial string FilterGrade { get; set; } = string.Empty;
-        [ObservableProperty] public partial string FilterType { get; set; } = string.Empty;
+        [ObservableProperty] public partial string? FilterStyle { get; set; } = null;
         [ObservableProperty] public partial string FilterAuthor { get; set; } = string.Empty;
         [ObservableProperty] public partial string FilterRetireInDays { get; set; } = null;
 
@@ -58,8 +58,7 @@ namespace BoulderSetManager.ViewModels
 
             if (FilterWall != null)
             {
-                var toRemove = Walls.Where(w => w.Id != FilterWall.Id).ToList();
-                foreach (var w in toRemove) Walls.Remove(w);
+                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => w.Id == FilterWall.Id));
             }
 
             int? retireDays = null;
@@ -68,14 +67,14 @@ namespace BoulderSetManager.ViewModels
 
             foreach (var wall in Walls)
             {
-                var filtered = wall.Boulders.Where(b =>
-                    (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
-                    (string.IsNullOrEmpty(FilterType) || b.Type == FilterType) &&
-                    (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
-                    (retireDays == null || b.DaysLeft <= retireDays)
-                ).ToList();
-
-                wall.Boulders = new ObservableCollection<BoulderingProblemDTO>(filtered);
+                wall.Boulders = new ObservableCollection<BoulderingProblemDTO>(
+                    wall.Boulders.Where(b =>
+                        (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
+                        (string.IsNullOrEmpty(FilterStyle) || b.Style == FilterStyle) &&
+                        (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
+                        (retireDays == null || b.DaysLeft <= retireDays)
+                    )
+                );
             }
             OnPropertyChanged(nameof(AverageGrade));
         }
@@ -85,10 +84,17 @@ namespace BoulderSetManager.ViewModels
         {
             FilterWall = null;
             FilterGrade = string.Empty;
-            FilterType = string.Empty;
+            FilterStyle = null;
             FilterAuthor = string.Empty;
             FilterRetireInDays = null;
             await LoadWalls(GymId);
+        }
+
+        [RelayCommand]
+        private async Task FilterRetiring()
+        {
+            FilterRetireInDays = "3";
+            await ApplyFilter();
         }
 
         [RelayCommand]
@@ -232,7 +238,7 @@ namespace BoulderSetManager.ViewModels
 
         [ObservableProperty] public partial BoulderingProblemDTO SelectedBoulder { get; set; }
         [ObservableProperty] public partial string NewGrade { get; set; } = string.Empty;
-        [ObservableProperty] public partial string NewType { get; set; } = string.Empty;
+        [ObservableProperty] public partial string NewStyle { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewAuthor { get; set; } = string.Empty;
         [ObservableProperty] public partial DateTime NewBuiltDate { get; set; } = DateTime.Today;
         [ObservableProperty] public partial DateTime NewRetireDate { get; set; } = DateTime.Today.AddMonths(1);
@@ -253,6 +259,7 @@ namespace BoulderSetManager.ViewModels
         {
             NewBuiltDate = boulder.BuiltDate;
             NewRetireDate = boulder.RetireDate;
+            NewStyle = boulder.Style;
             SelectedBoulder = boulder;
             IsEditBoulderVisible = true;
         }
@@ -263,7 +270,7 @@ namespace BoulderSetManager.ViewModels
             IsAddBoulderVisible = false;
             IsEditBoulderVisible = false;
             NewGrade = string.Empty;
-            NewType = string.Empty;
+            NewStyle = string.Empty;
             NewAuthor = string.Empty;
             HasBoulderInputError = false;
             BoulderInputErrorMessage = string.Empty;
@@ -273,7 +280,7 @@ namespace BoulderSetManager.ViewModels
         private async Task AddBoulder()
         {
             if (string.IsNullOrWhiteSpace(NewGrade)
-                || string.IsNullOrWhiteSpace(NewType)
+                || string.IsNullOrWhiteSpace(NewStyle)
                 || string.IsNullOrWhiteSpace(NewAuthor)  )
             {
                 HasBoulderInputError = true;
@@ -295,7 +302,7 @@ namespace BoulderSetManager.ViewModels
             var boulder = new BoulderingProblemDTO
             {
                 Grade = NewGrade,
-                Type = NewType,
+                Style = NewStyle,
                 Author = NewAuthor,
                 BuiltDate = NewBuiltDate,
                 RetireDate = NewRetireDate,
@@ -312,7 +319,7 @@ namespace BoulderSetManager.ViewModels
         private async Task EditBoulder()
         {
             if (string.IsNullOrWhiteSpace(NewGrade)
-                && string.IsNullOrWhiteSpace(NewType)
+                && string.IsNullOrWhiteSpace(NewStyle)
                 && string.IsNullOrWhiteSpace(NewAuthor)
                 && NewBuiltDate == SelectedBoulder.BuiltDate
                 && NewRetireDate == SelectedBoulder.RetireDate)
@@ -334,7 +341,7 @@ namespace BoulderSetManager.ViewModels
                 return;
             }
             if (!string.IsNullOrWhiteSpace(NewGrade)) SelectedBoulder.Grade = NewGrade;
-            if (!string.IsNullOrWhiteSpace(NewType)) SelectedBoulder.Type = NewType;
+            if (!string.IsNullOrWhiteSpace(NewStyle)) SelectedBoulder.Style = NewStyle;
             if (!string.IsNullOrWhiteSpace(NewAuthor)) SelectedBoulder.Author = NewAuthor;
             SelectedBoulder.BuiltDate = NewBuiltDate;
             SelectedBoulder.RetireDate = NewRetireDate;

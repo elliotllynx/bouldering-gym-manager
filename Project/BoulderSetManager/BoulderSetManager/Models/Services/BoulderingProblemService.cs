@@ -19,7 +19,7 @@ namespace BoulderSetManager.Models.Services
                 {
                     Id = b.Id,
                     Grade = b.Grade,
-                    Type = b.Type,
+                    Style = b.Style,
                     Author = b.Author,
                     BuiltDate = b.BuiltDate,
                     RetireDate = b.RetireDate,
@@ -34,7 +34,7 @@ namespace BoulderSetManager.Models.Services
             var boulder = new BoulderingProblem
             {
                 Grade = dto.Grade,
-                Type = dto.Type,
+                Style = dto.Style,
                 Author = dto.Author,
                 BuiltDate = dto.BuiltDate,
                 RetireDate = dto.RetireDate,
@@ -52,7 +52,7 @@ namespace BoulderSetManager.Models.Services
             if (boulder != null)
             {
                 boulder.Grade = dto.Grade;
-                boulder.Type = dto.Type;
+                boulder.Style = dto.Style;
                 boulder.Author = dto.Author;
                 boulder.BuiltDate = dto.BuiltDate;
                 boulder.RetireDate = dto.RetireDate;
@@ -82,7 +82,7 @@ namespace BoulderSetManager.Models.Services
                 {
                     Id = b.Id,
                     Grade = b.Grade,
-                    Type = b.Type,
+                    Style = b.Style,
                     Author = b.Author,
                     BuiltDate = b.BuiltDate,
                     RetireDate = b.RetireDate,

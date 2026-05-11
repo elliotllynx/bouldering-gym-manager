@@ -11,7 +11,7 @@ namespace BoulderSetManager.Models.Entities
         public int WallId { get; set; }
 
         [ObservableProperty] public partial string Grade { get; set; }
-        [ObservableProperty] public partial string Type { get; set; }
+        [ObservableProperty] public partial string Style { get; set; }
         [ObservableProperty] public partial string Author { get; set; }
 
         [ObservableProperty]
@@ -20,8 +20,11 @@ namespace BoulderSetManager.Models.Entities
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DaysLeft))]
+        [NotifyPropertyChangedFor(nameof(RowColor))]
         public partial DateTime RetireDate { get; set; }
 
         public int DaysLeft => (RetireDate - DateTime.Today).Days;
+
+        public Color RowColor => DaysLeft <= 3 ? Color.FromArgb("#1Fdc2626") : Colors.Transparent;
     }
 }

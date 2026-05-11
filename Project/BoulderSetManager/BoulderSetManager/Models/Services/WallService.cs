@@ -26,7 +26,7 @@ namespace BoulderSetManager.Models.Services
                             {
                                 Id = b.Id,
                                 Grade = b.Grade,
-                                Type = b.Type,
+                                Style = b.Style,
                                 Author = b.Author,
                                 BuiltDate = b.BuiltDate,
                                 RetireDate = b.RetireDate,
@@ -62,6 +62,7 @@ namespace BoulderSetManager.Models.Services
             }
         }
 
+        private readonly BoulderingProblemService _boulderService = new BoulderingProblemService();
         public async Task DeleteWall(int wallId)
         {
             using var db = new GymDbContext();

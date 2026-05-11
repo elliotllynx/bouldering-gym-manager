@@ -36,7 +36,7 @@
                     CornerRadius="8"
                     Command="{Binding DeleteGymCommand}" />
             <Button Text="Modify Gym"
-                    BackgroundColor="LightGray"
+                    BackgroundColor="Turquoise"
                     TextColor="Black"
                     CornerRadius="8"
                     Command="{Binding ShowModifyFormCommand}" />

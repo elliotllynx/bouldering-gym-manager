@@ -2,6 +2,7 @@
 using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,6 +35,7 @@ namespace BoulderSetManager.ViewModels
         private async Task LoadWalls(int gymId)
         {
             Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId));
+            OnPropertyChanged(nameof(AverageGrade));
         }
 
         [RelayCommand]
@@ -47,7 +49,7 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial string FilterGrade { get; set; } = string.Empty;
         [ObservableProperty] public partial string FilterType { get; set; } = string.Empty;
         [ObservableProperty] public partial string FilterAuthor { get; set; } = string.Empty;
-        [ObservableProperty] public partial int FilterRetireInDays { get; set; } = 0;
+        [ObservableProperty] public partial string FilterRetireInDays { get; set; } = null;
 
         [RelayCommand]
         private async Task ApplyFilter()
@@ -60,17 +62,22 @@ namespace BoulderSetManager.ViewModels
                 foreach (var w in toRemove) Walls.Remove(w);
             }
 
+            int? retireDays = null;
+            if (int.TryParse(FilterRetireInDays, out int parsed))
+                retireDays = parsed;
+
             foreach (var wall in Walls)
             {
                 var filtered = wall.Boulders.Where(b =>
                     (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
                     (string.IsNullOrEmpty(FilterType) || b.Type == FilterType) &&
                     (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
-                    (FilterRetireInDays == 0 || b.DaysLeft <= FilterRetireInDays)
+                    (retireDays == null || b.DaysLeft <= retireDays)
                 ).ToList();
 
                 wall.Boulders = new ObservableCollection<BoulderingProblemDTO>(filtered);
             }
+            OnPropertyChanged(nameof(AverageGrade));
         }
 
         [RelayCommand]
@@ -80,16 +87,60 @@ namespace BoulderSetManager.ViewModels
             FilterGrade = string.Empty;
             FilterType = string.Empty;
             FilterAuthor = string.Empty;
-            FilterRetireInDays = 0;
+            FilterRetireInDays = null;
             await LoadWalls(GymId);
         }
 
         [RelayCommand]
         private void ClearFilterWall() => FilterWall = null;
 
-        public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible;
+        // dynamic displayed properties management:
+
+        public string AverageGrade
+        {
+            get
+            {
+                var allBoulders = Walls.SelectMany(w => w.Boulders).ToList();
+                if (!allBoulders.Any()) return "N/A";
+
+                var validGrades = allBoulders
+                    .Select(b => ParseGrade(b.Grade))
+                    .Where(g => g > 0)
+                    .ToList();
+
+                if (!validGrades.Any()) return "N/A";
+
+                return FormatGrade((int)Math.Round(validGrades.Average()));
+            }
+        }
+
+        private int ParseGrade(string grade)
+        {
+            if (string.IsNullOrWhiteSpace(grade)) return 0;
+            var regex = new System.Text.RegularExpressions.Regex(@"^([4-9]|10)([A-C])(\+?)$");
+            var match = regex.Match(grade);
+            if (!match.Success) return 0;
+
+            int number = int.Parse(match.Groups[1].Value);
+            int letter = match.Groups[2].Value[0] - 'A';
+            int plus = match.Groups[3].Value == "+" ? 1 : 0;
+
+            return (number - 4) * 6 + letter * 2 + plus; // numeric score
+        }
+
+        private string FormatGrade(int score)
+        {
+            int number = score / 6 + 4;
+            int remainder = score % 6;
+            char letter = (char)('A' + remainder / 2);
+            string plus = remainder % 2 == 1 ? "+" : "";
+            return $"{number}{letter}{plus}";
+        }
+
 
         // wall CRUD management:
+
+        public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
@@ -250,8 +301,10 @@ namespace BoulderSetManager.ViewModels
                 RetireDate = NewRetireDate,
                 WallId = SelectedWall.Id
             };
-            boulder.Id = await _boulderService.CreateBoulder(boulder);
+
             SelectedWall.Boulders.Add(boulder);
+            boulder.Id = await _boulderService.CreateBoulder(boulder);
+            OnPropertyChanged(nameof(AverageGrade));
             HideBoulderForm();
         }
 
@@ -286,6 +339,7 @@ namespace BoulderSetManager.ViewModels
             SelectedBoulder.BuiltDate = NewBuiltDate;
             SelectedBoulder.RetireDate = NewRetireDate;
             await _boulderService.UpdateBoulder(SelectedBoulder);
+            OnPropertyChanged(nameof(AverageGrade));
             HideBoulderForm();
         }
 
@@ -295,6 +349,7 @@ namespace BoulderSetManager.ViewModels
             await _boulderService.DeleteBoulder(boulder.Id);
             var wall = Walls.FirstOrDefault(w => w.Id == boulder.WallId);
             wall?.Boulders.Remove(boulder);
+            OnPropertyChanged(nameof(AverageGrade));
         }
         private bool IsValidGrade(string grade)
         {

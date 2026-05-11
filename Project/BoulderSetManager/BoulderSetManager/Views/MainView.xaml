@@ -4,14 +4,14 @@
              xmlns:vm="clr-namespace:BoulderSetManager.ViewModels"
              xmlns:entities="clr-namespace:BoulderSetManager.Models.Entities"
              x:Class="BoulderSetManager.Views.MainView"
-             Title="Boulder Manager">
+             Title="Bouldering Gym Route Setting Manager">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
 
     <Grid>
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto, *,Auto">
+        <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto, Auto">
 
             <!-- Row 0: Gym Selection -->
             <HorizontalStackLayout Grid.Row="0" Padding="16,0" >
@@ -78,7 +78,7 @@
                        Placeholder="Author"
                        WidthRequest="100"/>
 
-                <Label Text="Retire in:"
+                <Label Text="Retire in &lt;= "
                        VerticalOptions="Center"
                        Padding="15,0,0,0"/>
                 <Entry Text="{Binding FilterRetireInDays}"
@@ -222,9 +222,26 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </ScrollView>
+            
+            <HorizontalStackLayout Grid.Row="5">
+                <Label Text="Average Grade:"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
+                <Label Text="{Binding AverageGrade}"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Padding="15,0,0,0"/>
 
-            <!-- Row 4: Add wall button -->
-            <Button Grid.Row="5"
+                <Button Text="Reset"
+                        BackgroundColor="#444"
+                        TextColor="White"
+                        CornerRadius="6"
+                        Margin="5,0,0,0"
+                        Command="{Binding ResetFilterCommand}"/>
+
+            </HorizontalStackLayout>
+            <!-- Row 6: Add wall button -->
+            <Button Grid.Row="6"
                     Text="+ Add Wall"
                     BackgroundColor="Turquoise"
                     CornerRadius="8"
@@ -320,11 +337,11 @@
 
                     <Label Grid.Row="3" Grid.Column="0" Text="Built:" TextColor="Black" VerticalOptions="Center"/>
                     <DatePicker Grid.Row="3" Grid.Column="1" TextColor="Black" Date="{Binding NewBuiltDate}"/>
-                    <Label Grid.Row="4" Grid.Column="0" Text="(Today by default)" TextColor="Gray" VerticalOptions="Center"/>
+                    <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Text="(Today by default)" TextColor="Gray" VerticalOptions="Center"/>
 
                     <Label Grid.Row="5" Grid.Column="0" Text="Retire:" TextColor="Black" VerticalOptions="Center"/>
                     <DatePicker Grid.Row="5" Grid.Column="1" TextColor="Black" Date="{Binding NewRetireDate}"/>
-                    <Label Grid.Row="6" Grid.Column="0" Text="1 month from today by default" TextColor="Gray" VerticalOptions="Center"/>
+                    <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Text="(1 month from today by default)" TextColor="Gray" VerticalOptions="Center"/>
                 </Grid>
                 <Button Text="Add Boulder"
                         BackgroundColor="Turquoise"

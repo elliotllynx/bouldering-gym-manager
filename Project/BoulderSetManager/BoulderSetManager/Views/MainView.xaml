@@ -4,7 +4,8 @@
              xmlns:vm="clr-namespace:BoulderSetManager.ViewModels"
              xmlns:entities="clr-namespace:BoulderSetManager.Models.Entities"
              x:Class="BoulderSetManager.Views.MainView"
-             Title="Bouldering Gym Route Setting Manager">
+             Title="Bouldering Gym Route Setting Manager"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
@@ -232,16 +233,31 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </ScrollView>
-            
-            <HorizontalStackLayout Grid.Row="5">
+
+            <microcharts:ChartView Grid.Row="4"
+                                   WidthRequest="100"
+                                   HeightRequest="100"
+                                   HorizontalOptions="End"
+                                   VerticalOptions="End"
+                                   Margin="12"
+                                   Chart="{Binding StyleChart}"/>
+
+            <HorizontalStackLayout Grid.Row="5" HorizontalOptions="End" Margin="20,0">
                 <Label Text="Average Grade:"
                        VerticalOptions="Center"
                        Padding="15,0,0,0"/>
                 <Label Text="{Binding AverageGrade}"
                        FontAttributes="Bold"
                        VerticalOptions="Center"
-                       Padding="15,0,0,0"/>
+                       Padding="5,0,15,0"/>
+                <BoxView Color="#00FFFF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center" Margin="5,0"/>
+                <Label Text="Slab" TextColor="White" FontSize="12" VerticalOptions="Center"/>
+                <BoxView Color="#FF00FF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
+                <Label Text="Vertical" TextColor="White" FontSize="12" VerticalOptions="Center"/>
+                <BoxView Color="#FFFF00" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
+                <Label Text="Overhang" TextColor="White" FontSize="12" VerticalOptions="Center"/>
             </HorizontalStackLayout>
+
             <!-- Row 6: Add wall button -->
             <Button Grid.Row="6"
                     Text="+ Add Wall"

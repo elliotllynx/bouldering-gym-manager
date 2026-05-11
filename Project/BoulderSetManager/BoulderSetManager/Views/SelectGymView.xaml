@@ -9,6 +9,8 @@
         <vm:SelectGymViewModel/>
     </ContentPage.BindingContext>
 
+    <Shell.TitleColor>White</Shell.TitleColor>
+
     <Grid>
 
         <VerticalStackLayout HorizontalOptions="Center"

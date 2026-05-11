@@ -2,11 +2,10 @@
 using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DAL.Entities;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using SkiaSharp;
+using Microcharts;
+
 
 namespace BoulderSetManager.ViewModels
 {
@@ -29,7 +28,7 @@ namespace BoulderSetManager.ViewModels
             var gymService = new GymService();
             SelectedGym = await gymService.GetGym(value);
             await LoadWalls(value);
-            OnPropertyChanged(nameof(AverageGrade));
+            UpdateDynamicProperties();
             WallPicker = new ObservableCollection<WallDTO>(Walls);
         }
 
@@ -76,7 +75,7 @@ namespace BoulderSetManager.ViewModels
                     )
                 );
             }
-            OnPropertyChanged(nameof(AverageGrade));
+            UpdateDynamicProperties();
         }
 
         [RelayCommand]
@@ -101,6 +100,12 @@ namespace BoulderSetManager.ViewModels
         private void ClearFilterWall() => FilterWall = null;
 
         // dynamic displayed properties management:
+
+        private void UpdateDynamicProperties()
+        {
+            OnPropertyChanged(nameof(AverageGrade));
+            UpdateStyleChart();
+        }
 
         public string AverageGrade
         {
@@ -142,6 +147,35 @@ namespace BoulderSetManager.ViewModels
             string plus = remainder % 2 == 1 ? "+" : "";
             return $"{number}{letter}{plus}";
         }
+
+        [ObservableProperty] public partial PieChart StyleChart { get; set; }
+        private void UpdateStyleChart()
+        {
+            var data = Walls.SelectMany(w => w.Boulders).GroupBy(b => b.Style);
+            var entries = new List<ChartEntry>();
+
+            foreach (var group in data)
+            {
+                entries.Add(new ChartEntry(group.Count())
+                {
+                    Color = SKColor.Parse(GetColorForStyle(group.Key))
+                });
+            }
+
+            StyleChart = new PieChart
+            {
+                Entries = entries,
+                BackgroundColor = SKColors.Transparent,
+                LabelMode = LabelMode.None
+            };
+        }
+        private string GetColorForStyle(string style) => style switch
+        {
+            "Slab" => "#00FFFF",     // Cyan
+            "Vertical" => "#FF00FF", // Magenta
+            "Overhang" => "#FFFF00", // Yellow
+            _ => "#000000"           // Black
+        };
 
 
         // wall CRUD management:
@@ -214,7 +248,13 @@ namespace BoulderSetManager.ViewModels
 
             SelectedWall.Name = NewWallName;
             await _wallService.UpdateWall(SelectedWall.Id, NewWallName);
-            WallPicker = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(GymId));
+            var pickerWall = WallPicker.FirstOrDefault(w => w.Id == SelectedWall.Id);
+            if (pickerWall != null)
+            {
+                pickerWall.Name = NewWallName;
+                var index = WallPicker.IndexOf(pickerWall);
+                WallPicker[index] = pickerWall;
+            }
             HideWallForm();
         }
 
@@ -223,7 +263,8 @@ namespace BoulderSetManager.ViewModels
         {
             await _wallService.DeleteWall(wall.Id);
             Walls.Remove(wall);
-            WallPicker.Remove(wall);
+            var pickerWall = WallPicker.FirstOrDefault(w => w.Id == wall.Id);
+            if (pickerWall != null) WallPicker.Remove(pickerWall);
         }
 
         // boulder CRUD management
@@ -311,7 +352,7 @@ namespace BoulderSetManager.ViewModels
 
             SelectedWall.Boulders.Add(boulder);
             boulder.Id = await _boulderService.CreateBoulder(boulder);
-            OnPropertyChanged(nameof(AverageGrade));
+            UpdateDynamicProperties();
             HideBoulderForm();
         }
 
@@ -346,7 +387,7 @@ namespace BoulderSetManager.ViewModels
             SelectedBoulder.BuiltDate = NewBuiltDate;
             SelectedBoulder.RetireDate = NewRetireDate;
             await _boulderService.UpdateBoulder(SelectedBoulder);
-            OnPropertyChanged(nameof(AverageGrade));
+            UpdateDynamicProperties();
             HideBoulderForm();
         }
 
@@ -356,7 +397,7 @@ namespace BoulderSetManager.ViewModels
             await _boulderService.DeleteBoulder(boulder.Id);
             var wall = Walls.FirstOrDefault(w => w.Id == boulder.WallId);
             wall?.Boulders.Remove(boulder);
-            OnPropertyChanged(nameof(AverageGrade));
+            UpdateDynamicProperties();
         }
         private bool IsValidGrade(string grade)
         {

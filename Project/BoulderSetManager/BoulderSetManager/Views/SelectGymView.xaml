@@ -53,7 +53,7 @@
 
         <BoxView Color="Black"
                  Opacity="0.5"
-                 IsVisible="{Binding IsFormVisible}" />
+                 IsVisible="{Binding IsPopUpVisible}" />
 
         <Frame IsVisible="{Binding IsCreateFormVisible}"
                VerticalOptions="Center"

@@ -61,8 +61,6 @@ namespace BoulderSetManager.Models.Services
                 await db.SaveChangesAsync();
             }
         }
-
-        private readonly BoulderingProblemService _boulderService = new BoulderingProblemService();
         public async Task DeleteWall(int wallId)
         {
             using var db = new GymDbContext();

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DAL.Entities;
+﻿using DAL.Entities;
 using DAL;
 using BoulderSetManager.Models.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +20,17 @@ namespace BoulderSetManager.Models.Services
                 .ToListAsync();
         }
 
-        public async Task CreateGym(string name, string location)
+        public async Task<int> CreateGym(GymDTO dto)
         {
             using var db = new GymDbContext();
-            var gym = new Gym { Name = name, Location = location };
+            var gym = new Gym
+            {
+                Name = dto.Name,
+                Location = dto.Location
+            };
             db.Gyms.Add(gym);
             await db.SaveChangesAsync();
+            return gym.Id;
         }
 
         public async Task DeleteGym(int gymId)
@@ -42,14 +44,14 @@ namespace BoulderSetManager.Models.Services
             }
         }
 
-        public async Task UpdateGym(int id, string name, string location)
+        public async Task UpdateGym(GymDTO dto)
         {
             using var db = new GymDbContext();
-            var gym = await db.Gyms.FindAsync(id);
+            var gym = await db.Gyms.FindAsync(dto.Id);
             if (gym != null)
             {
-                if (!string.IsNullOrWhiteSpace(name)) gym.Name = name;
-                if (!string.IsNullOrWhiteSpace(location)) gym.Location = location;
+                gym.Name = dto.Name;
+                gym.Location = dto.Location;
                 await db.SaveChangesAsync();
             }
         }

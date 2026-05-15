@@ -9,10 +9,8 @@ namespace BoulderSetManager.Models.Entities
     public partial class WallDTO : ObservableObject
     {
         public int Id { get; set; }
-        [ObservableProperty]
-        public partial string Name { get; set; }
         public int GymId { get; set; }
-        [ObservableProperty]
-        public partial ObservableCollection<BoulderingProblemDTO> Boulders { get; set; } = new();
+        [ObservableProperty] public partial string Name { get; set; }
+        [ObservableProperty] public partial ObservableCollection<BoulderingProblemDTO> Boulders { get; set; } = new();
     }
 }

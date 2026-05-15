@@ -2,11 +2,7 @@
 using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DAL.Entities;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using DAL;
 
 namespace BoulderSetManager.ViewModels
@@ -15,14 +11,13 @@ namespace BoulderSetManager.ViewModels
     {
         private readonly GymService _gymService = new GymService();
         [ObservableProperty] public partial ObservableCollection<GymDTO> Gyms { get; set; }
-        [ObservableProperty] public partial GymDTO SelectedGym { get; set; } = null;
+        [ObservableProperty] public partial GymDTO? SelectedGym { get; set; } = null;
         [ObservableProperty] public partial bool HasSelectError { get; set; } = false;
         [ObservableProperty] public partial string SelectErrorMessage { get; set; } = string.Empty;
 
         public SelectGymViewModel()
         {
             using var db = new GymDbContext();
-            db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
             LoadGyms();
         }
@@ -58,9 +53,13 @@ namespace BoulderSetManager.ViewModels
             SelectedGym = null;
         }
 
-        [ObservableProperty] public partial bool IsFormVisible { get; set; }  = false;
-        [ObservableProperty] public partial bool IsCreateFormVisible { get; set; } = false;
-        [ObservableProperty] public partial bool IsModifyFormVisible { get; set; } = false;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsCreateFormVisible { get; set; } = false;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsModifyFormVisible { get; set; } = false;
+        public bool IsPopUpVisible => IsModifyFormVisible || IsCreateFormVisible;
         [ObservableProperty] public partial string NewGymName { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewGymLocation { get; set; } = string.Empty;
         [ObservableProperty] public partial bool HasInputError { get; set; } = false;
@@ -68,11 +67,8 @@ namespace BoulderSetManager.ViewModels
 
 
         [RelayCommand]
-        private void ShowCreateForm()
-        {
-            IsFormVisible = true;
-            IsCreateFormVisible = true;
-        }
+        private void ShowCreateForm() => IsCreateFormVisible = true;
+
 
         [RelayCommand]
         private void ShowModifyForm()
@@ -84,14 +80,12 @@ namespace BoulderSetManager.ViewModels
                 SelectErrorMessage = "Please select gym to modify";
                 return;
             }
-            IsFormVisible = true;
             IsModifyFormVisible = true;
         }
 
         [RelayCommand]
         private void HideForm()
         {
-            IsFormVisible = false;
             IsCreateFormVisible = false;
             IsModifyFormVisible = false;
             NewGymName = string.Empty;
@@ -99,7 +93,6 @@ namespace BoulderSetManager.ViewModels
             HasInputError = false;
         }
         
-
         [RelayCommand]
         private async Task CreateGym()
         {
@@ -111,8 +104,14 @@ namespace BoulderSetManager.ViewModels
                 HasInputError = true;
                 return;
             }
-            await _gymService.CreateGym(NewGymName, NewGymLocation);
-            await LoadGyms();
+
+            var gym = new GymDTO()
+            {
+                Name = NewGymName,
+                Location = NewGymLocation
+            };
+            gym.Id = await _gymService.CreateGym(gym);
+            Gyms.Add(gym);
             HideForm();
         }
 
@@ -127,9 +126,16 @@ namespace BoulderSetManager.ViewModels
                 HasInputError = true;
                 return;
             }
+            if (!string.IsNullOrWhiteSpace(NewGymName))
+            {
+                SelectedGym.Name = NewGymName;
+            }
+            if (!string.IsNullOrWhiteSpace(NewGymLocation)) SelectedGym.Location = NewGymLocation;
 
-            await _gymService.UpdateGym(SelectedGym.Id, NewGymName, NewGymLocation);
-            await LoadGyms();
+            await _gymService.UpdateGym(SelectedGym);
+            // reasssigning for ui picker to register edit change 
+            var index = Gyms.IndexOf(SelectedGym);
+            Gyms[index] = SelectedGym;
             HideForm();
         }
     }

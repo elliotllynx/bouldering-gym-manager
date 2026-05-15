@@ -1,9 +1,6 @@
 ﻿using BoulderSetManager.Models.Entities;
 using DAL;
 using DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoulderSetManager.Models.Services

@@ -18,6 +18,7 @@ namespace BoulderSetManager.ViewModels
         public SelectGymViewModel()
         {
             using var db = new GymDbContext();
+            db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
             LoadGyms();
         }

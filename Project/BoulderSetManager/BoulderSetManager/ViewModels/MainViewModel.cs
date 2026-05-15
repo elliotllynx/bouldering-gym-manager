@@ -28,13 +28,13 @@ namespace BoulderSetManager.ViewModels
             var gymService = new GymService();
             SelectedGym = await gymService.GetGym(value);
             await LoadWalls(value);
-            WallPicker = new ObservableCollection<WallDTO>(Walls);
             UpdateDynamicProperties();
         }
 
         private async Task LoadWalls(int gymId)
         {
             Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId));
+            WallPicker = new ObservableCollection<WallDTO>(Walls);
         }
 
         [RelayCommand]
@@ -56,12 +56,14 @@ namespace BoulderSetManager.ViewModels
         private async Task ApplyFilter()
         {
             HasFilterError = false;
-            await LoadWalls(GymId);
-            WallPicker = new ObservableCollection<WallDTO>(Walls);
-
-            if (FilterWall != null)
+            if (string.IsNullOrWhiteSpace(FilterGrade)
+                && string.IsNullOrWhiteSpace(FilterAuthor)
+                && string.IsNullOrWhiteSpace(FilterRetireInDays)
+                && FilterWall == null)
             {
-                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => w.Id == FilterWall.Id));
+                HasFilterError = true;
+                FilterErrorMessage = "Please input filtering constrain.";
+                return;
             }
 
             if (!string.IsNullOrWhiteSpace(FilterGrade) && !IsValidGrade(FilterGrade))
@@ -70,6 +72,7 @@ namespace BoulderSetManager.ViewModels
                 FilterErrorMessage = "Please input valid grade.";
                 return;
             }
+
             int? retireDays = null;
             if (!string.IsNullOrWhiteSpace(FilterRetireInDays))
             {
@@ -83,6 +86,11 @@ namespace BoulderSetManager.ViewModels
                 }
             }
 
+            await LoadWalls(GymId);
+            if (FilterWall != null)
+            {
+                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => w.Id == FilterWall.Id));
+            }
             foreach (var wall in Walls)
             {
                 wall.Boulders = new ObservableCollection<BoulderingProblemDTO>(
@@ -107,7 +115,7 @@ namespace BoulderSetManager.ViewModels
             FilterAuthor = string.Empty;
             FilterRetireInDays = null;
             await LoadWalls(GymId);
-            WallPicker = new ObservableCollection<WallDTO>(Walls);
+            UpdateDynamicProperties();
         }
 
         [RelayCommand]
@@ -121,7 +129,6 @@ namespace BoulderSetManager.ViewModels
         private void ClearFilterWall() => FilterWall = null;
 
         // dynamic displayed properties management:
-
         private void UpdateDynamicProperties()
         {
             OnPropertyChanged(nameof(AverageGrade));
@@ -353,7 +360,7 @@ namespace BoulderSetManager.ViewModels
             if (!string.IsNullOrWhiteSpace(NewGrade) && !IsValidGrade(NewGrade))
             {
                 HasBoulderInputError = true;
-                BoulderInputErrorMessage = "Grade must be in format e.g. 6A or 6A+";
+                BoulderInputErrorMessage = "Grade must be in format e.g. 6A or 8B+";
                 return;
             }
             if (NewBuiltDate >= NewRetireDate)
@@ -394,7 +401,7 @@ namespace BoulderSetManager.ViewModels
             if (!string.IsNullOrWhiteSpace(NewGrade) && !IsValidGrade(NewGrade))
             {
                 HasBoulderInputError = true;
-                BoulderInputErrorMessage = "Grade must be in format e.g. 6A or 6A+";
+                BoulderInputErrorMessage = "Grade must be in format e.g. 6A or 8B+";
                 return;
             }
             if (NewBuiltDate >= NewRetireDate)

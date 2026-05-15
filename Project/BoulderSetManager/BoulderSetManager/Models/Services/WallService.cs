@@ -1,5 +1,4 @@
-﻿
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using BoulderSetManager.Models.Entities;
 using DAL;
 using Microsoft.EntityFrameworkCore;

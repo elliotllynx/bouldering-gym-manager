@@ -114,16 +114,17 @@
 
 
 
-                <!-- Row 2: Error Message -->
+            <!-- Row 2: Error Message -->
             <Label Grid.Row="2" 
                    Text="{Binding FilterErrorMessage}" 
                    TextColor="Red" FontSize="12"
                    IsVisible="{Binding HasFilterError}"
                    Padding="15"/>
 
+            <!-- Row 4: Column Annotations -->
             <Grid Grid.Row="3"
                   ColumnDefinitions="*,*,*,*,*,*"
-                  Margin="20,0,160,0">
+                  Margin="20,5,160,3">
                 <Label Grid.Column="0" Text="Grade" TextColor="Gray" FontSize="12"/>
                 <Label Grid.Column="1" Text="Type" TextColor="Gray" FontSize="12"/>
                 <Label Grid.Column="2" Text="Author" TextColor="Gray" FontSize="12"/>
@@ -135,7 +136,7 @@
             <!-- Row 4: Boulder List View -->
             <ScrollView Grid.Row="4"
                         VerticalScrollBarVisibility="Always">
-                
+
                 <!-- Following CollectionView xaml made with the help of ClaudeAI -->
                 <CollectionView ItemsSource="{Binding Walls}">
                     <CollectionView.ItemTemplate>
@@ -243,12 +244,13 @@
                                    Margin="12"
                                    Chart="{Binding StyleChart}"/>
 
-            <HorizontalStackLayout Grid.Row="5" HorizontalOptions="End" Margin="20,0">
+            <HorizontalStackLayout Grid.Row="5" HorizontalOptions="End" Margin="20,3,20,0">
                 <Label Text="Average Grade:"
                        VerticalOptions="Center"
                        Padding="15,0,0,0"/>
                 <Label Text="{Binding AverageGrade}"
                        FontAttributes="Bold"
+                       FontSize="20"
                        VerticalOptions="Center"
                        Padding="5,0,15,0"/>
                 <BoxView Color="#00FFFF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center" Margin="5,0"/>
@@ -270,11 +272,11 @@
                     Command="{Binding ShowAddWallCommand}"/>
         </Grid>
 
-
         <BoxView Color="Black"
                  Opacity="0.5"
                  IsVisible="{Binding IsPopUpVisible}" />
 
+        <!--Add Wall Pop Up -->
         <Frame IsVisible="{Binding IsAddWallVisible}"
                VerticalOptions="Center"
                HorizontalOptions="Center"
@@ -303,6 +305,7 @@
                 </VerticalStackLayout>
         </Frame>
 
+        <!-- Edit Wall Pop Up -->
         <Frame IsVisible="{Binding IsEditWallVisible}"
                VerticalOptions="Center"
                HorizontalOptions="Center"
@@ -331,6 +334,7 @@
             </VerticalStackLayout>
         </Frame>
 
+        <!-- Add Boulder Pop Up -->
         <Frame IsVisible="{Binding IsAddBoulderVisible}"
                VerticalOptions="Center"
                HorizontalOptions="Center"
@@ -349,14 +353,19 @@
                     <Entry Grid.Row="0" Grid.Column="1" Placeholder="e.g. 6A" TextColor="Black" Text="{Binding NewGrade}"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Text="Style:" TextColor="Black" VerticalOptions="Center"/>
-                    <Picker Grid.Row="1" Grid.Column="1"
-                            ItemsSource="{Binding Styles}"
-                            SelectedItem="{Binding NewStyle}"
-                            TextColor="Black"
-                            BackgroundColor="LightGray"/>
+                    <Border Grid.Row="1" Grid.Column="1"
+                            Stroke="Gray">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6"/>
+                        </Border.StrokeShape>
+                        <Picker 
+                                ItemsSource="{Binding Styles}"
+                                SelectedItem="{Binding NewStyle}"
+                                TextColor="Black"/>
+                    </Border>
 
                     <Label Grid.Row="2" Grid.Column="0" Text="Author:" TextColor="Black" VerticalOptions="Center"/>
-                    <Entry Grid.Row="2" Grid.Column="1" Placeholder="e.g. Jan" TextColor="Black" Text="{Binding NewAuthor}"/>
+                    <Entry Grid.Row="2" Grid.Column="1" Placeholder="e.g. Evžen" TextColor="Black" Text="{Binding NewAuthor}"/>
 
                     <Label Grid.Row="3" Grid.Column="0" Text="Built:" TextColor="Black" VerticalOptions="Center"/>
                     <DatePicker Grid.Row="3" Grid.Column="1" TextColor="Black" Date="{Binding NewBuiltDate}"/>
@@ -376,7 +385,8 @@
                 <Label IsVisible="{Binding HasBoulderInputError}" Text="{Binding BoulderInputErrorMessage}" TextColor="DarkRed"/>
             </VerticalStackLayout>
         </Frame>
-
+        
+        <!-- Edit Boulder Pop Up -->
         <Frame IsVisible="{Binding IsEditBoulderVisible}"
                VerticalOptions="Center"
                HorizontalOptions="Center"
@@ -395,11 +405,16 @@
                     <Entry Grid.Row="0" Grid.Column="1" Placeholder="{Binding SelectedBoulder.Grade}" TextColor="Black" Text="{Binding NewGrade}"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Text="Style:" TextColor="Black" VerticalOptions="Center"/>
-                    <Picker Grid.Row="1" Grid.Column="1"
+                    <Border Grid.Row="1" Grid.Column="1"
+                            Stroke="Gray">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6"/>
+                        </Border.StrokeShape>
+                        <Picker 
                             ItemsSource="{Binding Styles}"
                             SelectedItem="{Binding NewStyle}"
-                            TextColor="Black"
-                            BackgroundColor="LightGray"/>
+                            TextColor="Black"/>
+                    </Border>
 
                     <Label Grid.Row="2" Grid.Column="0" Text="Author:" TextColor="Black" VerticalOptions="Center"/>
                     <Entry Grid.Row="2" Grid.Column="1" Placeholder="{Binding SelectedBoulder.Author}" TextColor="Black" Text="{Binding NewAuthor}"/>

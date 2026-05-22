@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using SkiaSharp;
 using Microcharts;
 
-
 namespace BoulderSetManager.ViewModels
 {
     [QueryProperty(nameof(GymId), "gymId")]
@@ -20,7 +19,7 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial int GymId { get; set; }
         [ObservableProperty] public partial GymDTO SelectedGym { get; set; } = null;
         [ObservableProperty] public partial ObservableCollection<WallDTO> Walls { get; set; } = new();
-        // because picker doesnt change for collection edits + when filtering its needed to have list of all walls stored somewhere
+        // because picker doesnt change for collection edits + for filtering its needed to have list of all walls stored somewhere
         [ObservableProperty] public partial ObservableCollection<WallDTO> WallPicker { get; set; } = new();
 
         async partial void OnGymIdChanged(int value)
@@ -176,7 +175,7 @@ namespace BoulderSetManager.ViewModels
             return $"{number}{letter}{plus}";
         }
 
-        [ObservableProperty] public partial PieChart StyleChart { get; set; }
+        [ObservableProperty] public partial PieChart? StyleChart { get; set; }
         private void UpdateStyleChart()
         {
             var data = Walls.SelectMany(w => w.Boulders).GroupBy(b => b.Style);
@@ -213,7 +212,6 @@ namespace BoulderSetManager.ViewModels
 
 
         // wall CRUD management:
-
         public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible;
 
         [ObservableProperty]

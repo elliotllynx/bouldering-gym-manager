@@ -39,6 +39,7 @@ namespace BoulderSetManager.ViewModels
             }
             await Shell.Current.GoToAsync($"MainView?gymId={SelectedGym.Id}");
         }
+
         [RelayCommand]
         public async Task DeleteGym()
         {
@@ -66,13 +67,11 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial bool HasInputError { get; set; } = false;
         [ObservableProperty] public partial string InputErrorMessage { get; set; } = string.Empty;
 
-
-        [RelayCommand]
-        private void ShowCreateForm() => IsCreateFormVisible = true;
+        [RelayCommand] private void ShowCreateForm() => IsCreateFormVisible = true;
 
 
         [RelayCommand]
-        private void ShowModifyForm()
+        public void ShowModifyForm()
         {
             HasSelectError = false;
             if (SelectedGym == null)
@@ -85,7 +84,7 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
-        private void HideForm()
+        public void HideForm()
         {
             IsCreateFormVisible = false;
             IsModifyFormVisible = false;
@@ -95,7 +94,7 @@ namespace BoulderSetManager.ViewModels
         }
         
         [RelayCommand]
-        private async Task CreateGym()
+        public async Task CreateGym()
         {
             HasInputError = false;
             if (string.IsNullOrWhiteSpace(NewGymName)
@@ -117,7 +116,7 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
-        private async Task ModifyGym()
+        public async Task ModifyGym()
         {
             HasInputError = false;
             if (string.IsNullOrWhiteSpace(NewGymName)

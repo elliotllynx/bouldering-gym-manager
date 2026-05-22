@@ -22,7 +22,7 @@ namespace BoulderSetManager.Models.Services
                     RetireDate = b.RetireDate,
                     WallId = b.WallId
                 })
-                .ToListAsync<BoulderingProblemDTO>();
+                .ToListAsync();
         }
 
         public async Task<int> CreateBoulder(BoulderingProblemDTO dto)
@@ -85,7 +85,7 @@ namespace BoulderSetManager.Models.Services
                     RetireDate = b.RetireDate,
                     WallId = b.WallId
                 })
-                .ToListAsync<BoulderingProblemDTO>();
+                .ToListAsync();
         }
     }
 }

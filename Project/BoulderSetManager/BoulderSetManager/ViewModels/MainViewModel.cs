@@ -22,6 +22,8 @@ namespace BoulderSetManager.ViewModels
         // because picker doesnt change for collection edits + for filtering its needed to have list of all walls stored somewhere
         [ObservableProperty] public partial ObservableCollection<WallDTO> WallPicker { get; set; } = new();
 
+        private static System.Text.RegularExpressions.Regex _gradeRegex = new System.Text.RegularExpressions.Regex(@"^([4-9]|10)([A-C])(\+?)$");
+
         async partial void OnGymIdChanged(int value)
         {
             var gymService = new GymService();
@@ -47,7 +49,7 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial string FilterGrade { get; set; } = string.Empty;
         [ObservableProperty] public partial string? FilterStyle { get; set; } = null;
         [ObservableProperty] public partial string FilterAuthor { get; set; } = string.Empty;
-        [ObservableProperty] public partial string FilterRetireInDays { get; set; } = null;
+        [ObservableProperty] public partial string FilterRetireInDays { get; set; } = string.Empty;
         [ObservableProperty] public partial bool HasFilterError { get; set; } = false;
         [ObservableProperty] public partial string FilterErrorMessage { get; set; } = string.Empty;
 
@@ -112,7 +114,7 @@ namespace BoulderSetManager.ViewModels
             FilterGrade = string.Empty;
             FilterStyle = null;
             FilterAuthor = string.Empty;
-            FilterRetireInDays = null;
+            FilterRetireInDays = string.Empty;
             await LoadWalls(GymId);
             UpdateDynamicProperties();
         }
@@ -155,8 +157,7 @@ namespace BoulderSetManager.ViewModels
         private int ParseGrade(string grade)
         {
             if (string.IsNullOrWhiteSpace(grade)) return 0;
-            var regex = new System.Text.RegularExpressions.Regex(@"^([4-9]|10)([A-C])(\+?)$");
-            var match = regex.Match(grade);
+            var match = _gradeRegex.Match(grade);
             if (!match.Success) return 0;
 
             int number = int.Parse(match.Groups[1].Value);
@@ -429,8 +430,7 @@ namespace BoulderSetManager.ViewModels
         private bool IsValidGrade(string grade)
         {
             if (string.IsNullOrWhiteSpace(grade)) return false;
-            var regex = new System.Text.RegularExpressions.Regex(@"^([4-9]|10)[A-C]\+?$");
-            return regex.IsMatch(grade);
+            return _gradeRegex.IsMatch(grade);
         }
     }
 }

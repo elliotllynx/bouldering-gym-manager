@@ -20,7 +20,7 @@ namespace BoulderSetManager.ViewModels
             using var db = new GymDbContext();
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
-            LoadGyms();
+            _ = LoadGyms();
         }
         private async Task LoadGyms()
         {

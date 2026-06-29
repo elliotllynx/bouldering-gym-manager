@@ -2,7 +2,7 @@
 
 A desktop MAUI application for bouldering gym route-setting management, built for gym staff and route setters to track, manage, and visualise boulder problems across gym walls. Originally build for school C# project.
 
-## ✨ Features
+## Features
 
 - **CRUD for gyms, walls, and boulder problems**
 - **Filtering** - filter problems by wall, grade, style, author, or days until retirement

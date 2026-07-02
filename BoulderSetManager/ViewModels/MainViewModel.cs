@@ -12,7 +12,7 @@ namespace BoulderSetManager.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly WallService _wallService = new WallService();
-        private readonly BoulderingProblemService _boulderService = new BoulderingProblemService();
+        private readonly BoulderProblemService _boulderService = new BoulderProblemService();
         public List<string> Styles { get; } = new() { "Slab", "Vertical", "Overhang" };
 
         // page load: 
@@ -94,7 +94,7 @@ namespace BoulderSetManager.ViewModels
             }
             foreach (var wall in Walls)
             {
-                wall.Boulders = new ObservableCollection<BoulderingProblemDTO>(
+                wall.Boulders = new ObservableCollection<BoulderProblemDTO>(
                     wall.Boulders.Where(b =>
                         (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
                         (string.IsNullOrEmpty(FilterStyle) || b.Style == FilterStyle) &&
@@ -305,7 +305,7 @@ namespace BoulderSetManager.ViewModels
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
         public partial bool IsEditBoulderVisible { get; set; } = false;
 
-        [ObservableProperty] public partial BoulderingProblemDTO SelectedBoulder { get; set; }
+        [ObservableProperty] public partial BoulderProblemDTO SelectedBoulder { get; set; }
         [ObservableProperty] public partial string NewGrade { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewStyle { get; set; } = string.Empty;
         [ObservableProperty] public partial string NewAuthor { get; set; } = string.Empty;
@@ -324,7 +324,7 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
-        private void ShowEditBoulder(BoulderingProblemDTO boulder)
+        private void ShowEditBoulder(BoulderProblemDTO boulder)
         {
             NewBuiltDate = boulder.BuiltDate;
             NewRetireDate = boulder.RetireDate;
@@ -368,7 +368,7 @@ namespace BoulderSetManager.ViewModels
                 BoulderInputErrorMessage = "Built date cannot precede retire date.";
                 return;
             }
-            var boulder = new BoulderingProblemDTO
+            var boulder = new BoulderProblemDTO
             {
                 Grade = NewGrade,
                 Style = NewStyle,
@@ -420,7 +420,7 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
-        private async Task DeleteBoulder(BoulderingProblemDTO boulder)
+        private async Task DeleteBoulder(BoulderProblemDTO boulder)
         {
             await _boulderService.DeleteBoulder(boulder.Id);
             var wall = Walls.FirstOrDefault(w => w.Id == boulder.WallId);

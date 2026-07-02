@@ -8,6 +8,6 @@ namespace BoulderSetManager.Models.Entities
         public int Id { get; set; }
         public int GymId { get; set; }
         [ObservableProperty] public partial string Name { get; set; }
-        [ObservableProperty] public partial ObservableCollection<BoulderingProblemDTO> Boulders { get; set; } = new();
+        [ObservableProperty] public partial ObservableCollection<BoulderProblemDTO> Boulders { get; set; } = new();
     }
 }

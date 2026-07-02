@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoulderSetManager.Models.Services
 {
-    public class BoulderingProblemService
+    public class BoulderProblemService
     {
-        public async Task<List<BoulderingProblemDTO>> GetBouldersForWall(int wallId)
+        public async Task<List<BoulderProblemDTO>> GetBouldersForWall(int wallId)
         {
             using var db = new GymDbContext();
             return await db.BoulderingProblems
                 .Where(b => b.WallId == wallId)
-                .Select(b => new BoulderingProblemDTO
+                .Select(b => new BoulderProblemDTO
                 {
                     Id = b.Id,
                     Grade = b.Grade,
@@ -25,10 +25,10 @@ namespace BoulderSetManager.Models.Services
                 .ToListAsync();
         }
 
-        public async Task<int> CreateBoulder(BoulderingProblemDTO dto)
+        public async Task<int> CreateBoulder(BoulderProblemDTO dto)
         {
             using var db = new GymDbContext();
-            var boulder = new BoulderingProblem
+            var boulder = new BoulderProblem
             {
                 Grade = dto.Grade,
                 Style = dto.Style,
@@ -42,7 +42,7 @@ namespace BoulderSetManager.Models.Services
             return boulder.Id;
         }
 
-        public async Task UpdateBoulder(BoulderingProblemDTO dto)
+        public async Task UpdateBoulder(BoulderProblemDTO dto)
         {
             using var db = new GymDbContext();
             var boulder = await db.BoulderingProblems.FindAsync(dto.Id);
@@ -69,13 +69,13 @@ namespace BoulderSetManager.Models.Services
             }
         }
 
-        public async Task<List<BoulderingProblemDTO>> GetExpiringBoulders(int gymId, int daysAhead)
+        public async Task<List<BoulderProblemDTO>> GetExpiringBoulders(int gymId, int daysAhead)
         {
             using var db = new GymDbContext();
             var cutoff = DateTime.Now.AddDays(daysAhead);
             return await db.BoulderingProblems
                 .Where(b => b.RetireDate <= cutoff)
-                .Select(b => new BoulderingProblemDTO
+                .Select(b => new BoulderProblemDTO
                 {
                     Id = b.Id,
                     Grade = b.Grade,

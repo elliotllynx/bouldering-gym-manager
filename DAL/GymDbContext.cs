@@ -7,10 +7,11 @@ namespace DAL
     { 
         public DbSet<Gym> Gyms { get; set; }
         public DbSet<Wall> Walls { get; set; }
-        public DbSet<BoulderingProblem> BoulderingProblems { get; set; }
+        public DbSet<BoulderProblem> BoulderingProblems { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder options) 
             => options.UseSqlite("Data Source=gym.db");
 
+        private DateTime _today = DateTime.Today;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Gym>().HasData(
@@ -33,93 +34,93 @@ namespace DAL
                 new Wall { Id = 11, Name = "Rockets", GymId = 2 },
                 new Wall { Id = 12, Name = "Summit", GymId = 2 }
             );
-            modelBuilder.Entity<BoulderingProblem>().HasData(
+            modelBuilder.Entity<BoulderProblem>().HasData(
                 // Technical (1)
-                new BoulderingProblem { Id = 1, Grade = "5C", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(-17), RetireDate = today.AddDays(90), WallId = 1 },
-                new BoulderingProblem { Id = 2, Grade = "6A", Style = "Vertical", Author = "Martin", BuiltDate = today.AddDays(-18), RetireDate = today.AddDays(87), WallId = 1 },
-                new BoulderingProblem { Id = 3, Grade = "6B", Style = "Slab", Author = "Eva", BuiltDate = today.AddDays(-9), RetireDate = today.AddDays(124), WallId = 1 },
-                new BoulderingProblem { Id = 4, Grade = "6C+", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(-16), RetireDate = today.AddDays(111), WallId = 1 },
-                new BoulderingProblem { Id = 5, Grade = "7A", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(-40), RetireDate = today.AddDays(77), WallId = 1 },
+                new BoulderProblem { Id = 1, Grade = "5C", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(-17), RetireDate = _today.AddDays(13), WallId = 1 },
+                new BoulderProblem { Id = 2, Grade = "6A", Style = "Vertical", Author = "Martin", BuiltDate = _today.AddDays(-18), RetireDate = _today.AddDays(12), WallId = 1 },
+                new BoulderProblem { Id = 3, Grade = "6B", Style = "Slab", Author = "Eva", BuiltDate = _today.AddDays(-9), RetireDate = _today.AddDays(21), WallId = 1 },
+                new BoulderProblem { Id = 4, Grade = "6C+", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(-16), RetireDate = _today.AddDays(14), WallId = 1 },
+                new BoulderProblem { Id = 5, Grade = "7A", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(-40), RetireDate = _today.AddDays(-10), WallId = 1 },
 
                 // Stargate (2)
-                new BoulderingProblem { Id = 6, Grade = "6A+", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-6), RetireDate = today.AddDays(98), WallId = 2 },
-                new BoulderingProblem { Id = 7, Grade = "6B+", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-13), RetireDate = today.AddDays(109), WallId = 2 },
-                new BoulderingProblem { Id = 8, Grade = "7A+", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(-35), RetireDate = today.AddDays(100), WallId = 2 },
-                new BoulderingProblem { Id = 9, Grade = "7B", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(-30), RetireDate = today.AddDays(101), WallId = 2 },
-                new BoulderingProblem { Id = 10, Grade = "7C", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-21), RetireDate = today.AddDays(97), WallId = 2 },
+                new BoulderProblem { Id = 6, Grade = "6A+", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-6), RetireDate = _today.AddDays(24), WallId = 2 },
+                new BoulderProblem { Id = 7, Grade = "6B+", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-13), RetireDate = _today.AddDays(17), WallId = 2 },
+                new BoulderProblem { Id = 8, Grade = "7A+", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(-35), RetireDate = _today.AddDays(-5), WallId = 2 },
+                new BoulderProblem { Id = 9, Grade = "7B", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(-30), RetireDate = _today.AddDays(0), WallId = 2 },
+                new BoulderProblem { Id = 10, Grade = "7C", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-21), RetireDate = _today.AddDays(9), WallId = 2 },
 
                 // Nose (3)
-                new BoulderingProblem { Id = 11, Grade = "5C", Style = "Slab", Author = "Eva", BuiltDate = today.AddDays(-34), RetireDate = today.AddDays(93), WallId = 3 },
-                new BoulderingProblem { Id = 12, Grade = "6A", Style = "Slab", Author = "Jan", BuiltDate = today.AddDays(-22), RetireDate = today.AddDays(116), WallId = 3 },
-                new BoulderingProblem { Id = 13, Grade = "6B", Style = "Vertical", Author = "Tomáš", BuiltDate = today.AddDays(-4), RetireDate = today.AddDays(107), WallId = 3 },
-                new BoulderingProblem { Id = 14, Grade = "6C", Style = "Slab", Author = "Martin", BuiltDate = today.AddDays(-44), RetireDate = today.AddDays(63), WallId = 3 },
-                new BoulderingProblem { Id = 15, Grade = "7A", Style = "Vertical", Author = "Eva", BuiltDate = today.AddDays(-19), RetireDate = today.AddDays(77), WallId = 3 },
-                new BoulderingProblem { Id = 16, Grade = "7B+", Style = "Slab", Author = "Jan", BuiltDate = today.AddDays(-7), RetireDate = today.AddDays(105), WallId = 3 },
+                new BoulderProblem { Id = 11, Grade = "5C", Style = "Slab", Author = "Eva", BuiltDate = _today.AddDays(-34), RetireDate = _today.AddDays(-4), WallId = 3 },
+                new BoulderProblem { Id = 12, Grade = "6A", Style = "Slab", Author = "Jan", BuiltDate = _today.AddDays(-22), RetireDate = _today.AddDays(8), WallId = 3 },
+                new BoulderProblem { Id = 13, Grade = "6B", Style = "Vertical", Author = "Tomáš", BuiltDate = _today.AddDays(-4), RetireDate = _today.AddDays(26), WallId = 3 },
+                new BoulderProblem { Id = 14, Grade = "6C", Style = "Slab", Author = "Martin", BuiltDate = _today.AddDays(-44), RetireDate = _today.AddDays(-14), WallId = 3 },
+                new BoulderProblem { Id = 15, Grade = "7A", Style = "Vertical", Author = "Eva", BuiltDate = _today.AddDays(-19), RetireDate = _today.AddDays(11), WallId = 3 },
+                new BoulderProblem { Id = 16, Grade = "7B+", Style = "Slab", Author = "Jan", BuiltDate = _today.AddDays(-7), RetireDate = _today.AddDays(23), WallId = 3 },
 
                 // Wave (4)
-                new BoulderingProblem { Id = 17, Grade = "6A", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(0), RetireDate = today.AddDays(141), WallId = 4 },
-                new BoulderingProblem { Id = 18, Grade = "6A+", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-37), RetireDate = today.AddDays(55), WallId = 4 },
-                new BoulderingProblem { Id = 19, Grade = "6B+", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-18), RetireDate = today.AddDays(131), WallId = 4 },
-                new BoulderingProblem { Id = 20, Grade = "7A", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(-39), RetireDate = today.AddDays(75), WallId = 4 },
-                new BoulderingProblem { Id = 21, Grade = "7B", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(0), RetireDate = today.AddDays(130), WallId = 4 },
-                new BoulderingProblem { Id = 22, Grade = "7C+", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-7), RetireDate = today.AddDays(122), WallId = 4 },
+                new BoulderProblem { Id = 17, Grade = "6A", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(0), RetireDate = _today.AddDays(30), WallId = 4 },
+                new BoulderProblem { Id = 18, Grade = "6A+", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-37), RetireDate = _today.AddDays(-7), WallId = 4 },
+                new BoulderProblem { Id = 19, Grade = "6B+", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-18), RetireDate = _today.AddDays(12), WallId = 4 },
+                new BoulderProblem { Id = 20, Grade = "7A", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(-39), RetireDate = _today.AddDays(-9), WallId = 4 },
+                new BoulderProblem { Id = 21, Grade = "7B", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(0), RetireDate = _today.AddDays(30), WallId = 4 },
+                new BoulderProblem { Id = 22, Grade = "7C+", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-7), RetireDate = _today.AddDays(23), WallId = 4 },
 
                 // Monster (5)
-                new BoulderingProblem { Id = 23, Grade = "7A", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(0), RetireDate = today.AddDays(102), WallId = 5 },
-                new BoulderingProblem { Id = 24, Grade = "7B", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-27), RetireDate = today.AddDays(108), WallId = 5 },
-                new BoulderingProblem { Id = 25, Grade = "7C", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(-2), RetireDate = today.AddDays(137), WallId = 5 },
-                new BoulderingProblem { Id = 26, Grade = "8A", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-16), RetireDate = today.AddDays(88), WallId = 5 },
-                new BoulderingProblem { Id = 27, Grade = "8B", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(-7), RetireDate = today.AddDays(138), WallId = 5 },
+                new BoulderProblem { Id = 23, Grade = "7A", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(0), RetireDate = _today.AddDays(30), WallId = 5 },
+                new BoulderProblem { Id = 24, Grade = "7B", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-27), RetireDate = _today.AddDays(3), WallId = 5 },
+                new BoulderProblem { Id = 25, Grade = "7C", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(-2), RetireDate = _today.AddDays(28), WallId = 5 },
+                new BoulderProblem { Id = 26, Grade = "8A", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-16), RetireDate = _today.AddDays(14), WallId = 5 },
+                new BoulderProblem { Id = 27, Grade = "8B", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(-7), RetireDate = _today.AddDays(23), WallId = 5 },
 
                 // Parkour 1 (6)
-                new BoulderingProblem { Id = 28, Grade = "5C", Style = "Vertical", Author = "Eva", BuiltDate = today.AddDays(-2), RetireDate = today.AddDays(128), WallId = 6 },
-                new BoulderingProblem { Id = 29, Grade = "6A", Style = "Vertical", Author = "Tomáš", BuiltDate = today.AddDays(-5), RetireDate = today.AddDays(138), WallId = 6 },
-                new BoulderingProblem { Id = 30, Grade = "6B", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-27), RetireDate = today.AddDays(76), WallId = 6 },
-                new BoulderingProblem { Id = 31, Grade = "6C", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(0), RetireDate = today.AddDays(132), WallId = 6 },
+                new BoulderProblem { Id = 28, Grade = "5C", Style = "Vertical", Author = "Eva", BuiltDate = _today.AddDays(-28), RetireDate = _today.AddDays(2), WallId = 6 },
+                new BoulderProblem { Id = 29, Grade = "6A", Style = "Vertical", Author = "Tomáš", BuiltDate = _today.AddDays(-5), RetireDate = _today.AddDays(25), WallId = 6 },
+                new BoulderProblem { Id = 30, Grade = "6B", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-27), RetireDate = _today.AddDays(3), WallId = 6 },
+                new BoulderProblem { Id = 31, Grade = "6C", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(0), RetireDate = _today.AddDays(30), WallId = 6 },
 
                 // Parkour 2 (7)
-                new BoulderingProblem { Id = 32, Grade = "6A+", Style = "Vertical", Author = "Eva", BuiltDate = today.AddDays(-20), RetireDate = today.AddDays(111), WallId = 7 },
-                new BoulderingProblem { Id = 33, Grade = "6B", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(-2), RetireDate = today.AddDays(122), WallId = 7 },
-                new BoulderingProblem { Id = 34, Grade = "6C+", Style = "Vertical", Author = "Tomáš", BuiltDate = today.AddDays(-16), RetireDate = today.AddDays(98), WallId = 7 },
-                new BoulderingProblem { Id = 35, Grade = "7A", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-26), RetireDate = today.AddDays(81), WallId = 7 },
-                new BoulderingProblem { Id = 36, Grade = "7B+", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-16), RetireDate = today.AddDays(109), WallId = 7 },
+                new BoulderProblem { Id = 32, Grade = "6A+", Style = "Vertical", Author = "Eva", BuiltDate = _today.AddDays(-20), RetireDate = _today.AddDays(10), WallId = 7 },
+                new BoulderProblem { Id = 33, Grade = "6B", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(-2), RetireDate = _today.AddDays(28), WallId = 7 },
+                new BoulderProblem { Id = 34, Grade = "6C+", Style = "Vertical", Author = "Tomáš", BuiltDate = _today.AddDays(-16), RetireDate = _today.AddDays(14), WallId = 7 },
+                new BoulderProblem { Id = 35, Grade = "7A", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-26), RetireDate = _today.AddDays(4), WallId = 7 },
+                new BoulderProblem { Id = 36, Grade = "7B+", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-16), RetireDate = _today.AddDays(14), WallId = 7 },
 
                 // Kids (8)
-                new BoulderingProblem { Id = 37, Grade = "4A", Style = "Slab", Author = "Martin", BuiltDate = today.AddDays(-11), RetireDate = today.AddDays(128), WallId = 8 },
-                new BoulderingProblem { Id = 38, Grade = "4B", Style = "Vertical", Author = "Eva", BuiltDate = today.AddDays(2), RetireDate = today.AddDays(141), WallId = 8 },
-                new BoulderingProblem { Id = 39, Grade = "4C", Style = "Slab", Author = "Jan", BuiltDate = today.AddDays(-2), RetireDate = today.AddDays(139), WallId = 8 },
-                new BoulderingProblem { Id = 40, Grade = "5A", Style = "Vertical", Author = "Tomáš", BuiltDate = today.AddDays(-21), RetireDate = today.AddDays(82), WallId = 8 },
-                new BoulderingProblem { Id = 41, Grade = "5B", Style = "Slab", Author = "Martin", BuiltDate = today.AddDays(0), RetireDate = today.AddDays(148), WallId = 8 },
+                new BoulderProblem { Id = 37, Grade = "4A", Style = "Slab", Author = "Martin", BuiltDate = _today.AddDays(-11), RetireDate = _today.AddDays(19), WallId = 8 },
+                new BoulderProblem { Id = 38, Grade = "4B", Style = "Vertical", Author = "Eva", BuiltDate = _today.AddDays(2), RetireDate = _today.AddDays(32), WallId = 8 },
+                new BoulderProblem { Id = 39, Grade = "4C", Style = "Slab", Author = "Jan", BuiltDate = _today.AddDays(-2), RetireDate = _today.AddDays(28), WallId = 8 },
+                new BoulderProblem { Id = 40, Grade = "5A", Style = "Vertical", Author = "Tomáš", BuiltDate = _today.AddDays(-21), RetireDate = _today.AddDays(9), WallId = 8 },
+                new BoulderProblem { Id = 41, Grade = "5B", Style = "Slab", Author = "Martin", BuiltDate = _today.AddDays(0), RetireDate = _today.AddDays(30), WallId = 8 },
 
                 // Movement (9)
-                new BoulderingProblem { Id = 42, Grade = "6B", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(-29), RetireDate = today.AddDays(81), WallId = 9 },
-                new BoulderingProblem { Id = 43, Grade = "6C", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-9), RetireDate = today.AddDays(137), WallId = 9 },
-                new BoulderingProblem { Id = 44, Grade = "7A", Style = "Vertical", Author = "Tomáš", BuiltDate = today.AddDays(7), RetireDate = today.AddDays(155), WallId = 9 },
-                new BoulderingProblem { Id = 45, Grade = "7A+", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-21), RetireDate = today.AddDays(77), WallId = 9 },
-                new BoulderingProblem { Id = 46, Grade = "7B", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(-23), RetireDate = today.AddDays(82), WallId = 9 },
+                new BoulderProblem { Id = 42, Grade = "6B", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(-29), RetireDate = _today.AddDays(1), WallId = 9 },
+                new BoulderProblem { Id = 43, Grade = "6C", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-9), RetireDate = _today.AddDays(21), WallId = 9 },
+                new BoulderProblem { Id = 44, Grade = "7A", Style = "Vertical", Author = "Tomáš", BuiltDate = _today.AddDays(7), RetireDate = _today.AddDays(23), WallId = 9 },
+                new BoulderProblem { Id = 45, Grade = "7A+", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-21), RetireDate = _today.AddDays(9), WallId = 9 },
+                new BoulderProblem { Id = 46, Grade = "7B", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(-23), RetireDate = _today.AddDays(7), WallId = 9 },
 
                 // Competition (10)
-                new BoulderingProblem { Id = 47, Grade = "7A", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-15), RetireDate = today.AddDays(122), WallId = 10 },
-                new BoulderingProblem { Id = 48, Grade = "7B", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(-39), RetireDate = today.AddDays(88), WallId = 10 },
-                new BoulderingProblem { Id = 49, Grade = "7B+", Style = "Vertical", Author = "Martin", BuiltDate = today.AddDays(-38), RetireDate = today.AddDays(75), WallId = 10 },
-                new BoulderingProblem { Id = 50, Grade = "7C", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(-3), RetireDate = today.AddDays(101), WallId = 10 },
-                new BoulderingProblem { Id = 51, Grade = "8A", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(-4), RetireDate = today.AddDays(117), WallId = 10 },
-                new BoulderingProblem { Id = 52, Grade = "8B+", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(-15), RetireDate = today.AddDays(80), WallId = 10 },
+                new BoulderProblem { Id = 47, Grade = "7A", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-15), RetireDate = _today.AddDays(15), WallId = 10 },
+                new BoulderProblem { Id = 48, Grade = "7B", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(-39), RetireDate = _today.AddDays(-9), WallId = 10 },
+                new BoulderProblem { Id = 49, Grade = "7B+", Style = "Vertical", Author = "Martin", BuiltDate = _today.AddDays(-38), RetireDate = _today.AddDays(-8), WallId = 10 },
+                new BoulderProblem { Id = 50, Grade = "7C", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(-3), RetireDate = _today.AddDays(27), WallId = 10 },
+                new BoulderProblem { Id = 51, Grade = "8A", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(-4), RetireDate = _today.AddDays(26), WallId = 10 },
+                new BoulderProblem { Id = 52, Grade = "8B+", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(-15), RetireDate = _today.AddDays(15), WallId = 10 },
 
                 // Rockets (11)
-                new BoulderingProblem { Id = 53, Grade = "6C", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-13), RetireDate = today.AddDays(86), WallId = 11 },
-                new BoulderingProblem { Id = 54, Grade = "7A", Style = "Overhang", Author = "Jan", BuiltDate = today.AddDays(-54), RetireDate = today.AddDays(76), WallId = 11 },
-                new BoulderingProblem { Id = 55, Grade = "7A+", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(1), RetireDate = today.AddDays(129), WallId = 11 },
-                new BoulderingProblem { Id = 56, Grade = "7B", Style = "Overhang", Author = "Tomáš", BuiltDate = today.AddDays(3), RetireDate = today.AddDays(122), WallId = 11 },
-                new BoulderingProblem { Id = 57, Grade = "7C+", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-7), RetireDate = today.AddDays(116), WallId = 11 },
+                new BoulderProblem { Id = 53, Grade = "6C", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-13), RetireDate = _today.AddDays(27), WallId = 11 },
+                new BoulderProblem { Id = 54, Grade = "7A", Style = "Overhang", Author = "Jan", BuiltDate = _today.AddDays(-54), RetireDate = _today.AddDays(-24), WallId = 11 },
+                new BoulderProblem { Id = 55, Grade = "7A+", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(1), RetireDate = _today.AddDays(29), WallId = 11 },
+                new BoulderProblem { Id = 56, Grade = "7B", Style = "Overhang", Author = "Tomáš", BuiltDate = _today.AddDays(3), RetireDate = _today.AddDays(27), WallId = 11 },
+                new BoulderProblem { Id = 57, Grade = "7C+", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-7), RetireDate = _today.AddDays(23), WallId = 11 },
 
                 // Summit (12)
-                new BoulderingProblem { Id = 58, Grade = "6B+", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(-15), RetireDate = today.AddDays(135), WallId = 12 },
-                new BoulderingProblem { Id = 59, Grade = "6C", Style = "Slab", Author = "Eva", BuiltDate = today.AddDays(-12), RetireDate = today.AddDays(121), WallId = 12 },
-                new BoulderingProblem { Id = 60, Grade = "7A", Style = "Vertical", Author = "Tomáš", BuiltDate = today.AddDays(9), RetireDate = today.AddDays(148), WallId = 12 },
-                new BoulderingProblem { Id = 61, Grade = "7B", Style = "Overhang", Author = "Martin", BuiltDate = today.AddDays(-37), RetireDate = today.AddDays(94), WallId = 12 },
-                new BoulderingProblem { Id = 62, Grade = "7C", Style = "Vertical", Author = "Jan", BuiltDate = today.AddDays(-23), RetireDate = today.AddDays(77), WallId = 12 },
-                new BoulderingProblem { Id = 63, Grade = "8A+", Style = "Overhang", Author = "Eva", BuiltDate = today.AddDays(0), RetireDate = today.AddDays(119), WallId = 12 }
+                new BoulderProblem { Id = 58, Grade = "6B+", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(-15), RetireDate = _today.AddDays(15), WallId = 12 },
+                new BoulderProblem { Id = 59, Grade = "6C", Style = "Slab", Author = "Eva", BuiltDate = _today.AddDays(-12), RetireDate = _today.AddDays(28), WallId = 12 },
+                new BoulderProblem { Id = 60, Grade = "7A", Style = "Vertical", Author = "Tomáš", BuiltDate = _today.AddDays(9), RetireDate = _today.AddDays(39), WallId = 12 },
+                new BoulderProblem { Id = 61, Grade = "7B", Style = "Overhang", Author = "Martin", BuiltDate = _today.AddDays(-37), RetireDate = _today.AddDays(-7), WallId = 12 },
+                new BoulderProblem { Id = 62, Grade = "7C", Style = "Vertical", Author = "Jan", BuiltDate = _today.AddDays(-23), RetireDate = _today.AddDays(7), WallId = 12 },
+                new BoulderProblem { Id = 63, Grade = "8A+", Style = "Overhang", Author = "Eva", BuiltDate = _today.AddDays(0), RetireDate = _today.AddDays(30), WallId = 12 }
             );
         }
 

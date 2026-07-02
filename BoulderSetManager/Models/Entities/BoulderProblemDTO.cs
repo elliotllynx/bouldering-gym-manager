@@ -2,7 +2,7 @@
 
 namespace BoulderSetManager.Models.Entities
 {
-    public partial class BoulderingProblemDTO : ObservableObject
+    public partial class BoulderProblemDTO : ObservableObject
     {
         public int Id { get; set; }
         public int WallId { get; set; }

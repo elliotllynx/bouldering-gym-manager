@@ -18,10 +18,10 @@ namespace BoulderSetManager.Models.Services
                     Id = w.Id,
                     Name = w.Name,
                     GymId = w.GymId,
-                    Boulders = new ObservableCollection<BoulderingProblemDTO>(
+                    Boulders = new ObservableCollection<BoulderProblemDTO>(
                         db.BoulderingProblems
                             .Where(b => b.WallId == w.Id)
-                            .Select(b => new BoulderingProblemDTO
+                            .Select(b => new BoulderProblemDTO
                             {
                                 Id = b.Id,
                                 Grade = b.Grade,

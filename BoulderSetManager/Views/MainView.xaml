@@ -180,7 +180,7 @@
                                 <!-- Boulder rows -->
                                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Boulders}" Spacing="0">
                                     <BindableLayout.ItemTemplate>
-                                        <DataTemplate x:DataType="entities:BoulderingProblemDTO">
+                                        <DataTemplate x:DataType="entities:BoulderProblemDTO">
                                             <Grid ColumnDefinitions="*,*,*,*,*,*,Auto,Auto"
                                                   Padding="12,2"
                                                   BackgroundColor="{Binding RowColor}">

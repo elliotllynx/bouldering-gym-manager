@@ -1,15 +1,27 @@
-# 🧗 Bouldering Gym Route Setting Manager
+# Bouldering Gym Route Setting Manager
 
-A desktop MAUI application for bouldering gym route-setting management, built for gym staff and route setters to track, manage, and visualise boulder problems across gym walls. Originally build for school C# project.
+A desktop MAUI application for bouldering gym route-setting management, built for gym staff and route setters to track, manage, and visualise boulder problems across gym walls. Originally build for school C# project. 
+
+## Overview
+
+With bouldering on rise and climber customer apllications flodding the market I found an unused potential in bouldering apps focused on gym rouse-setters and staff.
+My app is designed with their needs and perspective as the top priority for feature development. Creating an intuitive UI with many build in features that should ensure the best experience. 
 
 ## Features
 
-- **CRUD for gyms, walls, and boulder problems**
+- **CRUD and input validations for gyms, walls, and boulder problems**
 - **Filtering** - filter problems by wall, grade, style, author, or days until retirement
-- **Retirement tracking** - quickly surface problems that are expiring soon with a one-click filter
+- **Retirement tracking** - quick and visual signs of soon retiring boudlers
 - **Grade statistics** - automatically calculates and displays the average grade across all currently visible problems
-- **Style distribution chart** - pie chart showing the breakdown of Slab / Vertical / Overhang problems
-- **Grade validation** - enforces Fontainebleau format (e.g. `6A`, `7B+`, `8C`)
+- **Style distribution chart** - automatically calculated pie chart showing the type distribution of currently visible boulders
+
+<img width="1424" height="837" alt="image" src="https://github.com/user-attachments/assets/4cd99042-6f12-4108-beb6-2593244b28ef" />
+
+
+**+ plan on adding soon:**
+- archive (gym, wall, boulder)
+- visual interactive map manager
+- integrated file inport/export of individual gyms and their walls and boulders
 
 ## Tech Stack
 
@@ -21,20 +33,20 @@ A desktop MAUI application for bouldering gym route-setting management, built fo
 | Database | SQLite |
 | Charts | Microcharts + SkiaSharp |
 
-## Project Structure
+## Project Structure - MVVM architacture in directories
 
 ```
 bouldering-gym-manager/
 ├── BoulderSetManager/           # MAUI application
 │   ├── Models/
-│   │   ├── Entities/            # DTOs (Gym, Wall, BoulderingProblem)
-│   │   └── Services/            # Business logic & DB access
-│   ├── ViewModels/              # MVVM view models
-│   ├── Views/                   # XAML pages
+│   │   ├── Entities/            # DTOs (Gym, Wall, BoulderProblem)
+│   │   └── Services/            # database access servises
+│   ├── ViewModels/              # view models
+│   ├── Views/                   # views (xaml files)
 │   └── MauiProgram.cs
 └── DAL/                         # Data Access Layer
-    ├── Entities/                # EF Core entity models
-    └── GymDbContext.cs
+    ├── Entities/                # EF Core entity models (Gym, Wall, BoulderProblem)
+    └── GymDbContext.cs          # databse state holder
 ```
 
 ## Getting Started
@@ -43,22 +55,19 @@ bouldering-gym-manager/
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - Windows 10/11
-- Visual Studio 2022 with the **.NET Multi-platform App UI development** workload
+- Visual Studio
 
 ### Running the App
 
 1. Clone the repository:
 ```bash
-   git clone https://github.com/elliotllynx/bouldering-gym-manager.git
+    git clone https://github.com/elliotllynx/bouldering-gym-manager.git
 ```
 2. Open `BoulderSetManager.sln` in Visual Studio
 3. Set `BoulderSetManager` as the startup project and select **Windows Machine** as the target
-4. Run with **F5** — the SQLite database is created automatically on first launch
+4. Run with **F5** (will run with preseeded data)
+5. for own database management comment out OnModelCreating in DAL/GymDbContext
 
-## Usage
+## Any feedback is greatly welcomed!
 
-1. On launch, create or select a gym
-2. Add walls to represent physical sections of your gym
-3. Add boulder problems to each wall — specify grade, style, author, and built/retire dates
-4. Use the filter bar to narrow down problems by any combination of attributes
-5. Use style chart and average grade automatical updates to help with consistent and intentional route setting
+Thank you for reading my first proper project and readme file. I enjoyed so much of this process and if you have any suggestions, improvements or feedback of any kind it mind, please reach out to me wherever you are the most comfortable with. 

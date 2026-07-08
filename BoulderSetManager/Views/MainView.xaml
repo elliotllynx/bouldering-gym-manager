@@ -4,14 +4,12 @@
              xmlns:vm="clr-namespace:BoulderSetManager.ViewModels"
              xmlns:entities="clr-namespace:BoulderSetManager.Models.Entities"
              x:Class="BoulderSetManager.Views.MainView"
-             Title="Bouldering Gym Route Setting Manager"
+             Shell.NavBarIsVisible="False"
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
-
-    <Shell.TitleColor>White</Shell.TitleColor>
 
     <Grid>
         <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto, Auto">
@@ -47,9 +45,9 @@
                 <Label Text="Wall:"
                            VerticalOptions="Center"
                            Padding="15,0,0,0"/>
-                <Picker ItemsSource="{Binding WallPicker}"
+                <Picker ItemsSource="{Binding AllWalls}"
                         ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding FilterWall}"/>
+                        SelectedItem="{Binding FilterWalls}"/>
 
                 <Button Text="All Walls"
                             BackgroundColor="Transparent"

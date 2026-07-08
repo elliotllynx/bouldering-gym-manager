@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DAL.Enums;
 
 namespace BoulderSetManager.Models.Entities
 {
@@ -7,7 +8,7 @@ namespace BoulderSetManager.Models.Entities
         public int Id { get; set; }
         public int WallId { get; set; }
         [ObservableProperty] public partial string Grade { get; set; }
-        [ObservableProperty] public partial string Style { get; set; }
+        [ObservableProperty] public partial BoulderStyle Style { get; set; }
         [ObservableProperty] public partial string Author { get; set; }
 
         [ObservableProperty]

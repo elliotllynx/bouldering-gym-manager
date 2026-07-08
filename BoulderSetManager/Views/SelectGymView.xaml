@@ -60,7 +60,8 @@
                HorizontalOptions="Center"
                WidthRequest="300"
                Padding="24"
-               BackgroundColor="White">
+               BackgroundColor="White"
+               StrokeThickness="0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="12" />
             </Border.StrokeShape>
@@ -88,13 +89,16 @@
             </VerticalStackLayout>
         </Border>
 
-        <Frame IsVisible="{Binding IsModifyFormVisible}"
+        <Border IsVisible="{Binding IsModifyFormVisible}"
                VerticalOptions="Center"
                HorizontalOptions="Center"
                WidthRequest="300"
                Padding="24"
-               CornerRadius="12"
-               BackgroundColor="White">
+               BackgroundColor="White"
+               StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
             <VerticalStackLayout Spacing="12">
                 <Label Text="Modify Gym"
                        FontSize="18"
@@ -117,6 +121,6 @@
                         Command="{Binding HideFormCommand}" />
                 <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" TextColor="DarkRed"></Label>
             </VerticalStackLayout>
-        </Frame>
+        </Border>
     </Grid>
 </ContentPage>

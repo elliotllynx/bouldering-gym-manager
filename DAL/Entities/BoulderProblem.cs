@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DAL.Enums;
 
 namespace DAL.Entities
 {
@@ -6,7 +7,7 @@ namespace DAL.Entities
     {
         [Key] public int Id { get; set; }
         public string Grade { get; set; }
-        public string Style { get; set; }
+        public BoulderStyle Style { get; set; }
         public string Author { get; set; }
         public DateTime BuiltDate { get; set; }
         public DateTime RetireDate { get; set; }

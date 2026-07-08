@@ -3,6 +3,7 @@ using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using DAL.Enums;
 using SkiaSharp;
 using Microcharts;
 
@@ -11,18 +12,18 @@ namespace BoulderSetManager.ViewModels
     [QueryProperty(nameof(GymId), "gymId")]
     public partial class MainViewModel : ObservableObject
     {
-        private readonly WallService _wallService = new WallService();
-        private readonly BoulderProblemService _boulderService = new BoulderProblemService();
-        public List<string> Styles { get; } = new() { "Slab", "Vertical", "Overhang" };
+        private readonly WallService _wallService = new();
+        private readonly BoulderProblemService _boulderService = new();
+        public List<BoulderStyle?> Styles { get; } = [null,  BoulderStyle.Overhang, BoulderStyle.Slab, BoulderStyle.Vertical];
 
         // page load: 
         [ObservableProperty] public partial int GymId { get; set; }
-        [ObservableProperty] public partial GymDTO SelectedGym { get; set; } = null;
+        [ObservableProperty] public partial GymDTO SelectedGym { get; set; }
         [ObservableProperty] public partial ObservableCollection<WallDTO> Walls { get; set; } = new();
         // because picker doesnt change for collection edits + for filtering its needed to have list of all walls stored somewhere
-        [ObservableProperty] public partial ObservableCollection<WallDTO> WallPicker { get; set; } = new();
+        [ObservableProperty] public partial ObservableCollection<WallDTO> AllWalls { get; set; } = new();
 
-        private static System.Text.RegularExpressions.Regex _gradeRegex = new System.Text.RegularExpressions.Regex(@"^([4-9]|10)([A-C])(\+?)$");
+        private readonly System.Text.RegularExpressions.Regex _gradeRegex = new(@"^([4-9]|10)([A-C])(\+?)$");
 
         async partial void OnGymIdChanged(int value)
         {
@@ -35,7 +36,7 @@ namespace BoulderSetManager.ViewModels
         private async Task LoadWalls(int gymId)
         {
             Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId));
-            WallPicker = new ObservableCollection<WallDTO>(Walls);
+            AllWalls = new ObservableCollection<WallDTO>(Walls);
         }
 
         [RelayCommand]
@@ -45,9 +46,9 @@ namespace BoulderSetManager.ViewModels
         }
 
         // filtering management:
-        [ObservableProperty] public partial WallDTO? FilterWall { get; set; } = null;
+        [ObservableProperty] public partial List<WallDTO> FilterWalls { get; set; } = new();
         [ObservableProperty] public partial string FilterGrade { get; set; } = string.Empty;
-        [ObservableProperty] public partial string? FilterStyle { get; set; } = null;
+        [ObservableProperty] public partial BoulderStyle? FilterStyle { get; set; } = null;
         [ObservableProperty] public partial string FilterAuthor { get; set; } = string.Empty;
         [ObservableProperty] public partial string FilterRetireInDays { get; set; } = string.Empty;
         [ObservableProperty] public partial bool HasFilterError { get; set; } = false;
@@ -60,7 +61,8 @@ namespace BoulderSetManager.ViewModels
             if (string.IsNullOrWhiteSpace(FilterGrade)
                 && string.IsNullOrWhiteSpace(FilterAuthor)
                 && string.IsNullOrWhiteSpace(FilterRetireInDays)
-                && FilterWall == null)
+                && FilterWalls.Count == 0
+                && FilterStyle is null)
             {
                 HasFilterError = true;
                 FilterErrorMessage = "Please input filtering constrain.";
@@ -88,29 +90,49 @@ namespace BoulderSetManager.ViewModels
             }
 
             await LoadWalls(GymId);
-            if (FilterWall != null)
+            if (FilterWalls.Count > 0)
             {
-                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => w.Id == FilterWall.Id));
+                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => FilterWalls.Any(fw => fw.Id == w.Id)));
             }
             foreach (var wall in Walls)
             {
                 wall.Boulders = new ObservableCollection<BoulderProblemDTO>(
                     wall.Boulders.Where(b =>
                         (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
-                        (string.IsNullOrEmpty(FilterStyle) || b.Style == FilterStyle) &&
+                        (FilterStyle is null || b.Style == FilterStyle) &&
                         (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
-                        (retireDays == null || b.DaysLeft <= retireDays)
+                        (retireDays is null || b.DaysLeft <= retireDays)
                     )
                 );
             }
             UpdateDynamicProperties();
         }
 
+        [ObservableProperty]
+        private bool isWallListExpanded = false;
+
+        [RelayCommand]
+        private void ToggleWallList() => IsWallListExpanded = !IsWallListExpanded;
+
+        public string SelectedWallsSummary =>
+            FilterWalls.Count == 0 ? "Select walls" : $"{FilterWalls.Count} wall(s) selected";
+
+        [RelayCommand]
+        private void ToggleWallSelection(WallDTO wall)
+        {
+            if (FilterWalls.Contains(wall))
+                FilterWalls.Remove(wall);
+            else
+                FilterWalls.Add(wall);
+
+            OnPropertyChanged(nameof(SelectedWallsSummary));
+        }
+
         [RelayCommand]
         private async Task ResetFilter()
         {
             HasFilterError = false;
-            FilterWall = null;
+            FilterWalls = new();
             FilterGrade = string.Empty;
             FilterStyle = null;
             FilterAuthor = string.Empty;
@@ -125,9 +147,6 @@ namespace BoulderSetManager.ViewModels
             FilterRetireInDays = "3";
             await ApplyFilter();
         }
-
-        [RelayCommand]
-        private void ClearFilterWall() => FilterWall = null;
 
         // dynamic displayed properties management:
         private void UpdateDynamicProperties()
@@ -203,11 +222,11 @@ namespace BoulderSetManager.ViewModels
                 LabelMode = LabelMode.None
             };
         }
-        private string GetColorForStyle(string style) => style switch
+        private string GetColorForStyle(BoulderStyle style) => style switch
         {
-            "Slab" => "#00FFFF",     // Cyan
-            "Vertical" => "#FF00FF", // Magenta
-            "Overhang" => "#FFFF00", // Yellow
+            BoulderStyle.Slab => "#00FFFF",     // Cyan
+            BoulderStyle.Vertical => "#FF00FF", // Magenta
+            BoulderStyle.Overhang => "#FFFF00", // Yellow
             _ => "#000000"           // Black
         };
 
@@ -224,7 +243,7 @@ namespace BoulderSetManager.ViewModels
         public partial bool IsEditWallVisible { get; set; } = false;
 
         [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
-        [ObservableProperty] public partial WallDTO SelectedWall { get; set; } = null;
+        [ObservableProperty] public partial WallDTO? SelectedWall { get; set; } = null;
         [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
         [ObservableProperty] public partial string WallInputErrorMessage { get; set; } = string.Empty;
 
@@ -265,7 +284,7 @@ namespace BoulderSetManager.ViewModels
             };
             wall.Id = await _wallService.CreateWall(wall);
             Walls.Add(wall);
-            WallPicker.Add(wall);
+            AllWalls.Add(wall);
             HideWallForm();
         }
 
@@ -281,8 +300,8 @@ namespace BoulderSetManager.ViewModels
 
             SelectedWall.Name = NewWallName;
             await _wallService.UpdateWall(SelectedWall.Id, NewWallName);
-            var index = WallPicker.IndexOf(SelectedWall);
-            WallPicker[index] = SelectedWall;
+            var index = AllWalls.IndexOf(SelectedWall);
+            AllWalls[index] = SelectedWall;
             HideWallForm();
         }
 
@@ -290,9 +309,8 @@ namespace BoulderSetManager.ViewModels
         private async Task DeleteWall(WallDTO wall)
         {
             await _wallService.DeleteWall(wall.Id);
-            if (FilterWall == wall) FilterWall = null;
             Walls.Remove(wall);
-            WallPicker.Remove(wall);
+            AllWalls.Remove(wall);
         }
 
         // boulder CRUD management
@@ -307,7 +325,7 @@ namespace BoulderSetManager.ViewModels
 
         [ObservableProperty] public partial BoulderProblemDTO SelectedBoulder { get; set; }
         [ObservableProperty] public partial string NewGrade { get; set; } = string.Empty;
-        [ObservableProperty] public partial string NewStyle { get; set; } = string.Empty;
+        [ObservableProperty] public partial BoulderStyle? NewStyle { get; set; } = null;
         [ObservableProperty] public partial string NewAuthor { get; set; } = string.Empty;
         [ObservableProperty] public partial DateTime NewBuiltDate { get; set; } = DateTime.Today;
         [ObservableProperty] public partial DateTime NewRetireDate { get; set; } = DateTime.Today.AddMonths(1);
@@ -339,7 +357,7 @@ namespace BoulderSetManager.ViewModels
             IsAddBoulderVisible = false;
             IsEditBoulderVisible = false;
             NewGrade = string.Empty;
-            NewStyle = string.Empty;
+            NewStyle = null;
             NewAuthor = string.Empty;
             HasBoulderInputError = false;
             BoulderInputErrorMessage = string.Empty;
@@ -349,7 +367,7 @@ namespace BoulderSetManager.ViewModels
         private async Task AddBoulder()
         {
             if (string.IsNullOrWhiteSpace(NewGrade)
-                || string.IsNullOrWhiteSpace(NewStyle)
+                || NewStyle is null
                 || string.IsNullOrWhiteSpace(NewAuthor)  )
             {
                 HasBoulderInputError = true;
@@ -371,7 +389,7 @@ namespace BoulderSetManager.ViewModels
             var boulder = new BoulderProblemDTO
             {
                 Grade = NewGrade,
-                Style = NewStyle,
+                Style = NewStyle.Value,
                 Author = NewAuthor,
                 BuiltDate = NewBuiltDate,
                 RetireDate = NewRetireDate,
@@ -388,7 +406,7 @@ namespace BoulderSetManager.ViewModels
         private async Task EditBoulder()
         {
             if (string.IsNullOrWhiteSpace(NewGrade)
-                && string.IsNullOrWhiteSpace(NewStyle)
+                && NewStyle is null
                 && string.IsNullOrWhiteSpace(NewAuthor)
                 && NewBuiltDate == SelectedBoulder.BuiltDate
                 && NewRetireDate == SelectedBoulder.RetireDate)
@@ -410,7 +428,7 @@ namespace BoulderSetManager.ViewModels
                 return;
             }
             if (!string.IsNullOrWhiteSpace(NewGrade)) SelectedBoulder.Grade = NewGrade;
-            if (!string.IsNullOrWhiteSpace(NewStyle)) SelectedBoulder.Style = NewStyle;
+            if (NewStyle != null) SelectedBoulder.Style = NewStyle.Value;
             if (!string.IsNullOrWhiteSpace(NewAuthor)) SelectedBoulder.Author = NewAuthor;
             SelectedBoulder.BuiltDate = NewBuiltDate;
             SelectedBoulder.RetireDate = NewRetireDate;

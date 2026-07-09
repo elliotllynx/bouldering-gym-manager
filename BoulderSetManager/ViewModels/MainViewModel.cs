@@ -46,7 +46,7 @@ namespace BoulderSetManager.ViewModels
         }
 
         // filtering management:
-        [ObservableProperty] public partial List<WallDTO> FilterWalls { get; set; } = new();
+        [ObservableProperty] public partial ObservableCollection<object> FilterWalls { get; set; } = new();
         [ObservableProperty] public partial string FilterGrade { get; set; } = string.Empty;
         [ObservableProperty] public partial BoulderStyle? FilterStyle { get; set; } = null;
         [ObservableProperty] public partial string FilterAuthor { get; set; } = string.Empty;
@@ -92,7 +92,8 @@ namespace BoulderSetManager.ViewModels
             await LoadWalls(GymId);
             if (FilterWalls.Count > 0)
             {
-                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => FilterWalls.Any(fw => fw.Id == w.Id)));
+                var filterIds = FilterWalls.Cast<WallDTO>().Select(fw => fw.Id).ToHashSet();
+                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => filterIds.Contains(w.Id)));
             }
             foreach (var wall in Walls)
             {
@@ -109,24 +110,19 @@ namespace BoulderSetManager.ViewModels
         }
 
         [ObservableProperty]
-        private bool isWallListExpanded = false;
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsWallListExpanded { get; set; } = false;
 
         [RelayCommand]
-        private void ToggleWallList() => IsWallListExpanded = !IsWallListExpanded;
-
-        public string SelectedWallsSummary =>
-            FilterWalls.Count == 0 ? "Select walls" : $"{FilterWalls.Count} wall(s) selected";
-
-        [RelayCommand]
-        private void ToggleWallSelection(WallDTO wall)
+        private void ToggleWallList()
         {
-            if (FilterWalls.Contains(wall))
-                FilterWalls.Remove(wall);
-            else
-                FilterWalls.Add(wall);
-
+            IsWallListExpanded = !IsWallListExpanded;
             OnPropertyChanged(nameof(SelectedWallsSummary));
         }
+        public string SelectedWallsSummary =>
+            FilterWalls.Count == 0 ? "Select walls" :
+            FilterWalls.Count == 1 ? "1 wall selected" :
+            $"{FilterWalls.Count} walls selected";
 
         [RelayCommand]
         private async Task ResetFilter()
@@ -232,7 +228,7 @@ namespace BoulderSetManager.ViewModels
 
 
         // wall CRUD management:
-        public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible;
+        public bool IsPopUpVisible => IsAddWallVisible || IsEditWallVisible || IsAddBoulderVisible || IsEditBoulderVisible || IsWallListExpanded;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]

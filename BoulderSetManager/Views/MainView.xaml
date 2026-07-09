@@ -42,21 +42,12 @@
                            VerticalOptions="Center"
                            Padding="15,0,15,0"/>
 
-                <Label Text="Wall:"
-                           VerticalOptions="Center"
-                           Padding="15,0,0,0"/>
-                <Picker ItemsSource="{Binding AllWalls}"
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding FilterWalls}"/>
-
-                <Button Text="All Walls"
-                            BackgroundColor="Transparent"
-                            TextColor="DarkGray"
-                            BorderColor="DarkGray"
-                            BorderWidth="1"
-                            Margin="10,0,0,0"
-                            CornerRadius="6"
-                            Command="{Binding ClearFilterWallCommand}"/>
+                <Button Text="{Binding SelectedWallsSummary}"
+                        Command="{Binding ToggleWallListCommand}"
+                        BackgroundColor="Turquoise"
+                        TextColor="Black"
+                        CornerRadius="6"
+                        Margin="15,0,0,0"/>
 
                 <Label Text="Grade:"
                            VerticalOptions="Center"
@@ -273,6 +264,53 @@
         <BoxView Color="Black"
                  Opacity="0.5"
                  IsVisible="{Binding IsPopUpVisible}" />
+
+        <!-- Select Walls Pop Up -->
+        <Border IsVisible="{Binding IsWallListExpanded}"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                WidthRequest="350"
+                Padding="24"
+                BackgroundColor="White"
+                StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="12">
+                <CollectionView ItemsSource="{Binding AllWalls}"
+                                 SelectionMode="Multiple"
+                                 SelectedItems="{Binding FilterWalls}"
+                                 HeightRequest="250">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Cyan" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Label Text="{Binding Name}" 
+                                       TextColor="Black"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Button Text="Done"
+                        BackgroundColor="Transparent"
+                        TextColor="Gray"
+                        Command="{Binding ToggleWallListCommand}"/>
+            </VerticalStackLayout>
+        </Border>
 
         <!--Add Wall Pop Up -->
         <Border IsVisible="{Binding IsAddWallVisible}"

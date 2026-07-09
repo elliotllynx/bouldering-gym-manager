@@ -276,38 +276,21 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="12" />
             </Border.StrokeShape>
-            <VerticalStackLayout Spacing="12">
+            <VerticalStackLayout >
                 <CollectionView ItemsSource="{Binding AllWalls}"
                                  SelectionMode="Multiple"
                                  SelectedItems="{Binding FilterWalls}"
                                  HeightRequest="250">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Padding="8">
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup Name="CommonStates">
-                                        <VisualState Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="Transparent" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState Name="Selected">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="Cyan" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
                                 <Label Text="{Binding Name}" 
-                                       TextColor="Black"/>
-                            </Grid>
+                                       TextColor="Black"
+                                       Padding="5"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
                 <Button Text="Done"
-                        BackgroundColor="Transparent"
-                        TextColor="Gray"
+                        BackgroundColor="Turquoise"
                         Command="{Binding ToggleWallListCommand}"/>
             </VerticalStackLayout>
         </Border>

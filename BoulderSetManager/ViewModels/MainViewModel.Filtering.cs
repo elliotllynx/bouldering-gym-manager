@@ -16,6 +16,8 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial string FilterRetireInDays { get; set; } = string.Empty;
         [ObservableProperty] public partial bool HasFilterError { get; set; } = false;
         [ObservableProperty] public partial string FilterErrorMessage { get; set; } = string.Empty;
+        public List<BoulderStyle?> Styles { get; } =
+            [null, BoulderStyle.Overhang, BoulderStyle.Slab, BoulderStyle.Vertical];
         public string SelectedWallsSummary =>
             FilterWalls.Count == 0 ? "Select walls" :
             FilterWalls.Count == 1 ? "1 wall selected" :
@@ -67,23 +69,30 @@ namespace BoulderSetManager.ViewModels
                 }
             }
 
-            await LoadWalls(GymId);
+            IEnumerable<WallDTO> baseWalls = AllWalls;
+
             if (FilterWalls.Count > 0)
             {
                 var filterIds = FilterWalls.Cast<WallDTO>().Select(fw => fw.Id).ToHashSet();
-                Walls = new ObservableCollection<WallDTO>(Walls.Where(w => filterIds.Contains(w.Id)));
+                baseWalls = baseWalls.Where(w => filterIds.Contains(w.Id));
             }
-            foreach (var wall in Walls)
-            {
-                wall.Boulders = new ObservableCollection<BoulderProblemDTO>(
-                    wall.Boulders.Where(b =>
-                        (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
-                        (FilterStyle is null || b.Style == FilterStyle) &&
-                        (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
-                        (retireDays is null || b.DaysLeft <= retireDays)
+
+            Walls = new ObservableCollection<WallDTO>(
+                baseWalls.Select(w => new WallDTO
+                {
+                    Id = w.Id,
+                    Name = w.Name,
+                    GymId = w.GymId,
+                    Boulders = new ObservableCollection<BoulderProblemDTO>(
+                        w.Boulders.Where(b =>
+                            (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
+                            (FilterStyle is null || b.Style == FilterStyle) &&
+                            (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
+                            (retireDays is null || b.DaysLeft <= retireDays)
+                        )
                     )
-                );
-            }
+                })
+            );
             UpdateDynamicProperties();
         }
 
@@ -100,13 +109,11 @@ namespace BoulderSetManager.ViewModels
             UpdateDynamicProperties();
         }
 
-
         [RelayCommand]
         private async Task FilterRetiring()
         {
             FilterRetireInDays = "3";
             await ApplyFilter();
         }
-
     }
 }

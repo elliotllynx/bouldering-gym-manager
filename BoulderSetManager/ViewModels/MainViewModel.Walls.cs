@@ -1,11 +1,19 @@
 ﻿using BoulderSetManager.Models.Entities;
+using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 
 namespace BoulderSetManager.ViewModels
 {
     public partial class MainViewModel
     {
+        private readonly WallService _wallService = new();
+        [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
+        [ObservableProperty] public partial WallDTO? SelectedWall { get; set; } = null;
+        [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
+        [ObservableProperty] public partial string WallInputErrorMessage { get; set; } = string.Empty;
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
         public partial bool IsAddWallVisible { get; set; } = false;
@@ -13,11 +21,6 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
         public partial bool IsEditWallVisible { get; set; } = false;
-
-        [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
-        [ObservableProperty] public partial WallDTO? SelectedWall { get; set; } = null;
-        [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
-        [ObservableProperty] public partial string WallInputErrorMessage { get; set; } = string.Empty;
 
         [RelayCommand]
         private void ShowAddWall() => IsAddWallVisible = true;
@@ -83,6 +86,10 @@ namespace BoulderSetManager.ViewModels
             await _wallService.DeleteWall(wall.Id);
             Walls.Remove(wall);
             AllWalls.Remove(wall);
+            var filterItem = FilterWalls.Cast<WallDTO>().FirstOrDefault(fw => fw.Id == wall.Id);
+            if (filterItem != null)
+                FilterWalls.Remove(filterItem);
+            UpdateDynamicProperties();
         }
     }
 }

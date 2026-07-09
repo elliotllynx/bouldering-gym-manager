@@ -1,5 +1,6 @@
 ﻿using BoulderSetManager.Models.Entities;
 using BoulderSetManager.Models.Helpers;
+using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DAL.Enums;
@@ -8,15 +9,7 @@ namespace BoulderSetManager.ViewModels
 {
     public partial class MainViewModel
     {
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
-        public partial bool IsAddBoulderVisible { get; set; } = false;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
-        public partial bool IsEditBoulderVisible { get; set; } = false;
-
+        private readonly BoulderProblemService _boulderService = new();
         [ObservableProperty] public partial BoulderProblemDTO SelectedBoulder { get; set; }
         [ObservableProperty] public partial string NewGrade { get; set; } = string.Empty;
         [ObservableProperty] public partial BoulderStyle? NewStyle { get; set; } = null;
@@ -25,6 +18,14 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial DateTime NewRetireDate { get; set; } = DateTime.Today.AddMonths(1);
         [ObservableProperty] public partial bool HasBoulderInputError { get; set; } = false;
         [ObservableProperty] public partial string BoulderInputErrorMessage { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsAddBoulderVisible { get; set; } = false;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
+        public partial bool IsEditBoulderVisible { get; set; } = false;
 
         [RelayCommand]
         private void ShowAddBoulder(WallDTO wall)

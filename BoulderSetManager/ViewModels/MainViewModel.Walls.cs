@@ -9,6 +9,8 @@ namespace BoulderSetManager.ViewModels
     public partial class MainViewModel
     {
         private readonly WallService _wallService = new();
+        [ObservableProperty] public partial ObservableCollection<WallDTO> Walls { get; set; } = new();
+        [ObservableProperty] public partial ObservableCollection<WallDTO> AllWalls { get; set; } = new();
         [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
         [ObservableProperty] public partial WallDTO? SelectedWall { get; set; } = null;
         [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
@@ -75,8 +77,6 @@ namespace BoulderSetManager.ViewModels
 
             SelectedWall.Name = NewWallName;
             await _wallService.UpdateWall(SelectedWall.Id, NewWallName);
-            var index = AllWalls.IndexOf(SelectedWall);
-            AllWalls[index] = SelectedWall;
             HideWallForm();
         }
 

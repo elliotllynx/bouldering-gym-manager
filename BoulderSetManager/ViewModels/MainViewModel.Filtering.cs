@@ -35,9 +35,37 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
-        private async Task ApplyFilter()
+        private void ApplyFilter()
+        {
+            if (!ValidFilterCriteria(out int? retireDays)) return;
+
+            if (FilterWalls.Count > 0)
+            {
+                var filterIds = FilterWalls.Cast<WallDTO>().Select(fw => fw.Id).ToHashSet();
+                Walls = new ObservableCollection<WallDTO>(AllWalls.Where(w => filterIds.Contains(w.Id)));
+            }
+
+            ResetBoulderVisibility();
+            foreach (var wall in Walls)
+            {
+                foreach (var boulder in wall.Boulders)
+                {
+                    if ((!string.IsNullOrEmpty(FilterGrade) && boulder.Grade != FilterGrade) ||
+                        (FilterStyle is not null && boulder.Style != FilterStyle) ||
+                        (!string.IsNullOrEmpty(FilterAuthor) && boulder.Author != FilterAuthor) ||
+                        (retireDays is not null && boulder.DaysLeft > retireDays))
+                    {
+                        boulder.IsVisible = false;
+                    }
+                }
+            }
+            UpdateDynamicProperties();
+        }
+
+        private bool ValidFilterCriteria(out int? retireDays)
         {
             HasFilterError = false;
+            retireDays = null;
             if (string.IsNullOrWhiteSpace(FilterGrade)
                 && string.IsNullOrWhiteSpace(FilterAuthor)
                 && string.IsNullOrWhiteSpace(FilterRetireInDays)
@@ -46,17 +74,16 @@ namespace BoulderSetManager.ViewModels
             {
                 HasFilterError = true;
                 FilterErrorMessage = "Please input filtering constrain.";
-                return;
+                return false;
             }
 
             if (!string.IsNullOrWhiteSpace(FilterGrade) && !GradeHelper.IsValidGrade(FilterGrade))
             {
                 HasFilterError = true;
                 FilterErrorMessage = "Please input valid grade.";
-                return;
+                return false;
             }
 
-            int? retireDays = null;
             if (!string.IsNullOrWhiteSpace(FilterRetireInDays))
             {
                 if (int.TryParse(FilterRetireInDays, out int parsed))
@@ -65,39 +92,20 @@ namespace BoulderSetManager.ViewModels
                 {
                     HasFilterError = true;
                     FilterErrorMessage = "Please input a valid number for days left.";
-                    return;
+                    return false;
                 }
             }
+            return true;
+        }
 
-            IEnumerable<WallDTO> baseWalls = AllWalls;
-
-            if (FilterWalls.Count > 0)
-            {
-                var filterIds = FilterWalls.Cast<WallDTO>().Select(fw => fw.Id).ToHashSet();
-                baseWalls = baseWalls.Where(w => filterIds.Contains(w.Id));
-            }
-
-            Walls = new ObservableCollection<WallDTO>(
-                baseWalls.Select(w => new WallDTO
-                {
-                    Id = w.Id,
-                    Name = w.Name,
-                    GymId = w.GymId,
-                    Boulders = new ObservableCollection<BoulderProblemDTO>(
-                        w.Boulders.Where(b =>
-                            (string.IsNullOrEmpty(FilterGrade) || b.Grade == FilterGrade) &&
-                            (FilterStyle is null || b.Style == FilterStyle) &&
-                            (string.IsNullOrEmpty(FilterAuthor) || b.Author == FilterAuthor) &&
-                            (retireDays is null || b.DaysLeft <= retireDays)
-                        )
-                    )
-                })
-            );
-            UpdateDynamicProperties();
+        private void ResetBoulderVisibility()
+        {
+            foreach (var boulder in AllWalls.SelectMany(w => w.Boulders))
+                boulder.IsVisible = true;
         }
 
         [RelayCommand]
-        private async Task ResetFilter()
+        private void ResetFilter()
         {
             HasFilterError = false;
             FilterWalls = new();
@@ -105,15 +113,15 @@ namespace BoulderSetManager.ViewModels
             FilterStyle = null;
             FilterAuthor = string.Empty;
             FilterRetireInDays = string.Empty;
-            await LoadWalls(GymId);
+            Walls = AllWalls;
             UpdateDynamicProperties();
         }
 
         [RelayCommand]
-        private async Task FilterRetiring()
+        private void FilterRetiring()
         {
             FilterRetireInDays = "3";
-            await ApplyFilter();
+            ApplyFilter();
         }
     }
 }

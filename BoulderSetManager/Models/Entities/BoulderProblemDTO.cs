@@ -21,5 +21,6 @@ namespace BoulderSetManager.Models.Entities
         public partial DateTime RetireDate { get; set; }
         public int DaysLeft => (RetireDate - DateTime.Today).Days;
         public Color RowColor => DaysLeft <= 3 ? Color.FromArgb("#1Fdc2626") : Colors.Transparent;
+        [ObservableProperty] public partial bool IsVisible { get; set; } = true;
     }
 }

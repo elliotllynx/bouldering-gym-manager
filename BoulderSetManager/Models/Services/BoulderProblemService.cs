@@ -20,7 +20,8 @@ namespace BoulderSetManager.Models.Services
                     Author = b.Author,
                     BuiltDate = b.BuiltDate,
                     RetireDate = b.RetireDate,
-                    WallId = b.WallId
+                    WallId = b.WallId,
+                    Status = b.Status
                 })
                 .ToListAsync();
         }
@@ -35,7 +36,8 @@ namespace BoulderSetManager.Models.Services
                 Author = dto.Author,
                 BuiltDate = dto.BuiltDate,
                 RetireDate = dto.RetireDate,
-                WallId = dto.WallId
+                WallId = dto.WallId,
+                Status = dto.Status
             };
             db.BoulderingProblems.Add(boulder);
             await db.SaveChangesAsync();
@@ -54,6 +56,7 @@ namespace BoulderSetManager.Models.Services
                 boulder.BuiltDate = dto.BuiltDate;
                 boulder.RetireDate = dto.RetireDate;
                 boulder.WallId = dto.WallId;
+                boulder.Status = dto.Status;
                 await db.SaveChangesAsync();
             }
         }
@@ -67,25 +70,6 @@ namespace BoulderSetManager.Models.Services
                 db.BoulderingProblems.Remove(boulder);
                 await db.SaveChangesAsync();
             }
-        }
-
-        public async Task<List<BoulderProblemDTO>> GetExpiringBoulders(int gymId, int daysAhead)
-        {
-            using var db = new GymDbContext();
-            var cutoff = DateTime.Now.AddDays(daysAhead);
-            return await db.BoulderingProblems
-                .Where(b => b.RetireDate <= cutoff)
-                .Select(b => new BoulderProblemDTO
-                {
-                    Id = b.Id,
-                    Grade = b.Grade,
-                    Style = b.Style,
-                    Author = b.Author,
-                    BuiltDate = b.BuiltDate,
-                    RetireDate = b.RetireDate,
-                    WallId = b.WallId
-                })
-                .ToListAsync();
         }
     }
 }

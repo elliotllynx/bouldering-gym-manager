@@ -11,6 +11,7 @@ namespace DAL.Entities
         public string Author { get; set; }
         public DateTime BuiltDate { get; set; }
         public DateTime RetireDate { get; set; }
+        public Status Status { get; set; }
         public int WallId { get; set; }
         public Wall Wall { get; set; }
     }

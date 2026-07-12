@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DAL.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Entities
 {
@@ -8,6 +9,7 @@ namespace DAL.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
+        public Status Status { get; set; }
 
     }
 }

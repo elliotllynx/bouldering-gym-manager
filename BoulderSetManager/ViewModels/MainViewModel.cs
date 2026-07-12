@@ -3,6 +3,7 @@ using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using DAL.Enums;
 
 namespace BoulderSetManager.ViewModels
 {
@@ -11,6 +12,7 @@ namespace BoulderSetManager.ViewModels
     {
         [ObservableProperty] public partial int GymId { get; set; }
         [ObservableProperty] public partial GymDTO SelectedGym { get; set; }
+        public List<Status> Loaded { get; set; } = [Status.Active, Status.Draft];
         async partial void OnGymIdChanged(int value)
         {
             var gymService = new GymService();
@@ -21,8 +23,7 @@ namespace BoulderSetManager.ViewModels
 
         private async Task InitLoadWalls(int gymId)
         {
-            Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId));
-            AllWalls = new ObservableCollection<WallDTO>(Walls);
+            Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId, Loaded));
         }
 
         [RelayCommand]

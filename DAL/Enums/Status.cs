@@ -5,6 +5,6 @@ namespace DAL.Enums
     {
         Active,
         Archived,
-        Planned
+        Draft
     }
 }

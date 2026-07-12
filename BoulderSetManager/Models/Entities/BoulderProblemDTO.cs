@@ -20,7 +20,19 @@ namespace BoulderSetManager.Models.Entities
         [NotifyPropertyChangedFor(nameof(RowColor))]
         public partial DateTime RetireDate { get; set; }
         public int DaysLeft => (RetireDate - DateTime.Today).Days;
-        public Color RowColor => DaysLeft <= 3 ? Color.FromArgb("#1Fdc2626") : Colors.Transparent;
+
+        public Color RowColor => Status switch
+        {
+            Status.Archived => Colors.Yellow.WithAlpha(0.1f),
+            Status.Draft => Colors.DarkCyan.WithAlpha(0.2f),
+            _ => DaysLeft <= 3 ? Colors.DarkRed.WithAlpha(0.2f) : Colors.Transparent
+        };
         [ObservableProperty] public partial bool IsVisible { get; set; } = true;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RowColor))]
+        [NotifyPropertyChangedFor(nameof(ArchivedButtonText))]
+        public partial Status Status { get; set; }
+        public string ArchivedButtonText => Status == Status.Archived ? "Unarchive" : "Archive";
     }
 }

@@ -16,8 +16,14 @@ namespace BoulderSetManager.ViewModels
         [ObservableProperty] public partial string FilterRetireInDays { get; set; } = string.Empty;
         [ObservableProperty] public partial bool HasFilterError { get; set; } = false;
         [ObservableProperty] public partial string FilterErrorMessage { get; set; } = string.Empty;
+        private int? RetireInDays { get; set; } = null;
         public List<BoulderStyle?> Styles { get; } =
             [null, BoulderStyle.Overhang, BoulderStyle.Slab, BoulderStyle.Vertical];
+
+        private HashSet<Status> _visibleStatuses = [Status.Active, Status.Draft];
+        [ObservableProperty] public partial bool ActiveVisible { get; set; } = true;
+        [ObservableProperty] public partial bool DraftVisible { get; set; } = true;
+        [ObservableProperty] public partial bool ArchivedVisible { get; set; } = false;
         public string SelectedWallsSummary =>
             FilterWalls.Count == 0 ? "Select walls" :
             FilterWalls.Count == 1 ? "1 wall selected" :
@@ -35,37 +41,71 @@ namespace BoulderSetManager.ViewModels
         }
 
         [RelayCommand]
+        private async Task Filter()
+        {
+            if (ArchivedVisible && !Loaded.Contains(Status.Archived))
+            {
+                Loaded.Add(Status.Archived);
+                Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(GymId, Loaded));
+            }
+            if (!UpdateSelectedStatuses() && !ValidFilterCriteria()) return;
+            ApplyFilter();
+        }
+
         private void ApplyFilter()
         {
-            if (!ValidFilterCriteria(out int? retireDays)) return;
-
             if (FilterWalls.Count > 0)
             {
                 var filterIds = FilterWalls.Cast<WallDTO>().Select(fw => fw.Id).ToHashSet();
-                Walls = new ObservableCollection<WallDTO>(AllWalls.Where(w => filterIds.Contains(w.Id)));
+                foreach (WallDTO w in Walls)
+                {
+                    w.IsVisible = filterIds.Contains(w.Id) && _visibleStatuses.Contains(w.Status);
+                }
+            }
+            else
+            {
+                foreach (WallDTO w in Walls)
+                {
+                    w.IsVisible = _visibleStatuses.Contains(w.Status);
+                }
             }
 
-            ResetBoulderVisibility();
             foreach (var wall in Walls)
             {
+                if (!wall.IsVisible) continue;
                 foreach (var boulder in wall.Boulders)
                 {
-                    if ((!string.IsNullOrEmpty(FilterGrade) && boulder.Grade != FilterGrade) ||
+                    if (!_visibleStatuses.Contains(boulder.Status) ||
+                        (!string.IsNullOrEmpty(FilterGrade) && boulder.Grade != FilterGrade) ||
                         (FilterStyle is not null && boulder.Style != FilterStyle) ||
                         (!string.IsNullOrEmpty(FilterAuthor) && boulder.Author != FilterAuthor) ||
-                        (retireDays is not null && boulder.DaysLeft > retireDays))
+                        (RetireInDays is not null && boulder.DaysLeft > RetireInDays))
                     {
                         boulder.IsVisible = false;
+                    }
+                    else
+                    {
+                        boulder.IsVisible = true;
                     }
                 }
             }
             UpdateDynamicProperties();
         }
 
-        private bool ValidFilterCriteria(out int? retireDays)
+        private bool UpdateSelectedStatuses()
+        {
+            var currentStatuses = new HashSet<Status>();
+            if (ActiveVisible) currentStatuses.Add(Status.Active);
+            if (DraftVisible) currentStatuses.Add(Status.Draft);
+            if (ArchivedVisible) currentStatuses.Add(Status.Archived);
+            bool changed = !currentStatuses.SetEquals(_visibleStatuses);
+            _visibleStatuses = currentStatuses;
+            return changed;
+        }
+
+        private bool ValidFilterCriteria()
         {
             HasFilterError = false;
-            retireDays = null;
             if (string.IsNullOrWhiteSpace(FilterGrade)
                 && string.IsNullOrWhiteSpace(FilterAuthor)
                 && string.IsNullOrWhiteSpace(FilterRetireInDays)
@@ -87,7 +127,7 @@ namespace BoulderSetManager.ViewModels
             if (!string.IsNullOrWhiteSpace(FilterRetireInDays))
             {
                 if (int.TryParse(FilterRetireInDays, out int parsed))
-                    retireDays = parsed;
+                    RetireInDays = parsed;
                 else
                 {
                     HasFilterError = true;
@@ -98,30 +138,30 @@ namespace BoulderSetManager.ViewModels
             return true;
         }
 
-        private void ResetBoulderVisibility()
-        {
-            foreach (var boulder in AllWalls.SelectMany(w => w.Boulders))
-                boulder.IsVisible = true;
-        }
-
         [RelayCommand]
-        private void ResetFilter()
+        private async Task ResetFilter()
         {
+            if (ArchivedVisible && !Loaded.Contains(Status.Archived))
+            {
+                Loaded.Add(Status.Archived);
+                Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(GymId, Loaded));
+            }
             HasFilterError = false;
             FilterWalls = new();
             FilterGrade = string.Empty;
             FilterStyle = null;
             FilterAuthor = string.Empty;
             FilterRetireInDays = string.Empty;
-            Walls = AllWalls;
+            UpdateSelectedStatuses();
+            ApplyFilter();
             UpdateDynamicProperties();
         }
 
         [RelayCommand]
-        private void FilterRetiring()
+        private async Task FilterRetiring()
         {
             FilterRetireInDays = "3";
-            ApplyFilter();
+            await Filter();
         }
     }
 }

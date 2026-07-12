@@ -85,7 +85,7 @@
                         TextColor="Black"
                         CornerRadius="6"
                         Margin="15,0,0,0"
-                        Command="{Binding ApplyFilterCommand}"/>
+                        Command="{Binding FilterCommand}"/>
                 <Button Text="Reset"
                         BackgroundColor="#444"
                         TextColor="White"
@@ -130,7 +130,7 @@
                 <CollectionView ItemsSource="{Binding Walls}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="entities:WallDTO">
-                            <VerticalStackLayout Padding="12,8">
+                            <VerticalStackLayout Padding="12,8" IsVisible="{Binding IsVisible}">
 
                                 <!-- Wall header -->
                                 <Grid ColumnDefinitions="*,Auto,Auto,Auto"
@@ -170,7 +170,7 @@
                                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Boulders}" Spacing="0">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="entities:BoulderProblemDTO">
-                                            <Grid ColumnDefinitions="*,*,*,*,*,*,Auto,Auto"
+                                            <Grid ColumnDefinitions="2*,2*,2*,2*,2*,2*,0.8*,1.2*,*"
                                                   Padding="12,2"
                                                   BackgroundColor="{Binding RowColor}"
                                                   IsVisible="{Binding IsVisible}">
@@ -183,7 +183,7 @@
                                                 <Border Grid.Column="6" 
                                                         HeightRequest="30"
                                                         VerticalOptions="Center"
-                                                        Margin="10,0">
+                                                        Margin="0,0,10,0">
                                                     <Border.StrokeShape>
                                                         <RoundRectangle CornerRadius="6"/>
                                                     </Border.StrokeShape>
@@ -201,7 +201,27 @@
                                                 <Border Grid.Column="7" 
                                                         HeightRequest="30"
                                                         VerticalOptions="Center"
-                                                        Stroke="DarkRed">
+                                                        Stroke="Purple"
+                                                        Margin="0,0,10,0">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="6"/>
+                                                    </Border.StrokeShape>
+                                                    <Label  Text="{Binding ArchivedButtonText}"
+                                                            TextColor="Purple"
+                                                            VerticalOptions="Center"
+                                                            HorizontalOptions="Center"
+                                                            Padding="10,0">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ToggleArchiveBoulderCommand}"
+                                                                    CommandParameter="{Binding .}"/>
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                </Border>
+                                                <Border Grid.Column="8" 
+                                                        HeightRequest="30"
+                                                        VerticalOptions="Center"
+                                                        Stroke="DarkRed"
+                                                        Margin="0,0,10,0">
                                                     <Border.StrokeShape>
                                                         <RoundRectangle CornerRadius="6"/>
                                                     </Border.StrokeShape>
@@ -234,22 +254,34 @@
                                    Margin="12"
                                    Chart="{Binding StyleChart}"/>
 
-            <HorizontalStackLayout Grid.Row="5" HorizontalOptions="End" Margin="20,3,20,0">
-                <Label Text="Average Grade:"
-                       VerticalOptions="Center"
-                       Padding="15,0,0,0"/>
-                <Label Text="{Binding AverageGrade}"
-                       FontAttributes="Bold"
-                       FontSize="20"
-                       VerticalOptions="Center"
-                       Padding="5,0,15,0"/>
-                <BoxView Color="#00FFFF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center" Margin="5,0"/>
-                <Label Text="Slab" TextColor="White" FontSize="12" VerticalOptions="Center"/>
-                <BoxView Color="#FF00FF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
-                <Label Text="Vertical" TextColor="White" FontSize="12" VerticalOptions="Center"/>
-                <BoxView Color="#FFFF00" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
-                <Label Text="Overhang" TextColor="White" FontSize="12" VerticalOptions="Center"/>
-            </HorizontalStackLayout>
+            <Grid Grid.Row="5" ColumnDefinitions="*,*" >
+                <HorizontalStackLayout HorizontalOptions="Start" Grid.Column="0">
+                    <CheckBox IsChecked="{Binding ActiveVisible}" />
+                    <Label Text="Active" VerticalOptions="Center" />
+
+                    <CheckBox IsChecked="{Binding DraftVisible}" />
+                    <Label Text="Planned" VerticalOptions="Center" />
+
+                    <CheckBox IsChecked="{Binding ArchivedVisible}" />
+                    <Label Text="Archived" VerticalOptions="Center" />
+                </HorizontalStackLayout >
+                <HorizontalStackLayout HorizontalOptions="End" Margin="20,3,20,0" Grid.Column="1">
+                    <Label Text="Average Grade:"
+                           VerticalOptions="Center"
+                           Padding="15,0,0,0"/>
+                    <Label Text="{Binding AverageGrade}"
+                           FontAttributes="Bold"
+                           FontSize="20"
+                           VerticalOptions="Center"
+                           Padding="5,0,15,0"/>
+                    <BoxView Color="#00FFFF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center" Margin="5,0"/>
+                    <Label Text="Slab" TextColor="White" FontSize="12" VerticalOptions="Center"/>
+                    <BoxView Color="#FF00FF" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
+                    <Label Text="Vertical" TextColor="White" FontSize="12" VerticalOptions="Center"/>
+                    <BoxView Color="#FFFF00" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
+                    <Label Text="Overhang" TextColor="White" FontSize="12" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Grid>
 
             <!-- Row 6: Add wall button -->
             <Button Grid.Row="6"
@@ -278,7 +310,7 @@
                 <RoundRectangle CornerRadius="12" />
             </Border.StrokeShape>
             <VerticalStackLayout >
-                <CollectionView ItemsSource="{Binding AllWalls}"
+                <CollectionView ItemsSource="{Binding Walls}"
                                  SelectionMode="Multiple"
                                  SelectedItems="{Binding FilterWalls}"
                                  HeightRequest="250">

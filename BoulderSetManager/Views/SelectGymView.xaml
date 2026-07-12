@@ -3,13 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BoulderSetManager.Views.SelectGymView"
              xmlns:vm="clr-namespace:BoulderSetManager.ViewModels"
-             Title="SelectGym">
+             Shell.NavBarIsVisible="False">
 
     <ContentPage.BindingContext>
         <vm:SelectGymViewModel/>
     </ContentPage.BindingContext>
-
-    <Shell.TitleColor>White</Shell.TitleColor>
 
     <Grid>
 

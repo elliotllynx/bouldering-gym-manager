@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DAL.Enums;
 
 namespace BoulderSetManager.Models.Entities
 { 
@@ -12,5 +13,6 @@ namespace BoulderSetManager.Models.Entities
         [NotifyPropertyChangedFor(nameof(DisplayName))]
         public partial string Location { get; set; }
         public string DisplayName => $"{Name} ({Location})";
+        public Status Status { get; set; }
     }
 }

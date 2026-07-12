@@ -28,6 +28,13 @@ namespace BoulderSetManager.ViewModels
         public partial bool IsEditBoulderVisible { get; set; } = false;
 
         [RelayCommand]
+        private async Task ToggleArchiveBoulder(BoulderProblemDTO b)
+        {
+            b.Status = b.Status == Status.Archived ? Status.Active : Status.Archived;
+            await _boulderService.UpdateBoulder(b);
+        }
+
+        [RelayCommand]
         private void ShowAddBoulder(WallDTO wall)
         {
             NewBuiltDate = DateTime.Today;

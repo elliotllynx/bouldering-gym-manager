@@ -201,13 +201,13 @@
                                                 <Border Grid.Column="7" 
                                                         HeightRequest="30"
                                                         VerticalOptions="Center"
-                                                        Stroke="Purple"
+                                                        Stroke="DarkGoldenrod"
                                                         Margin="0,0,10,0">
                                                     <Border.StrokeShape>
                                                         <RoundRectangle CornerRadius="6"/>
                                                     </Border.StrokeShape>
                                                     <Label  Text="{Binding ArchivedButtonText}"
-                                                            TextColor="Purple"
+                                                            TextColor="DarkGoldenrod"
                                                             VerticalOptions="Center"
                                                             HorizontalOptions="Center"
                                                             Padding="10,0">
@@ -255,15 +255,15 @@
                                    Chart="{Binding StyleChart}"/>
 
             <Grid Grid.Row="5" ColumnDefinitions="*,*" >
-                <HorizontalStackLayout HorizontalOptions="Start" Grid.Column="0">
-                    <CheckBox IsChecked="{Binding ActiveVisible}" />
+                <HorizontalStackLayout HorizontalOptions="Start" Grid.Column="0" Padding="15,0">
                     <Label Text="Active" VerticalOptions="Center" />
+                    <CheckBox IsChecked="{Binding ActiveVisible}" />
 
+                    <Label Text="Draft" VerticalOptions="Center" />
                     <CheckBox IsChecked="{Binding DraftVisible}" />
-                    <Label Text="Planned" VerticalOptions="Center" />
 
-                    <CheckBox IsChecked="{Binding ArchivedVisible}" />
                     <Label Text="Archived" VerticalOptions="Center" />
+                    <CheckBox IsChecked="{Binding ArchivedVisible}" />
                 </HorizontalStackLayout >
                 <HorizontalStackLayout HorizontalOptions="End" Margin="20,3,20,0" Grid.Column="1">
                     <Label Text="Average Grade:"

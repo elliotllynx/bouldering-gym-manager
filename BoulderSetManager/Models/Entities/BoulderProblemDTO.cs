@@ -5,11 +5,19 @@ namespace BoulderSetManager.Models.Entities
 {
     public partial class BoulderProblemDTO : ObservableObject
     {
+        // ============================================================
+        // Data — persist to database
+        // ============================================================
+
         public int Id { get; set; }
+
         public int WallId { get; set; }
+
         [ObservableProperty] public partial string Grade { get; set; }
-        [ObservableProperty] public partial BoulderStyle Style { get; set; }
+
         [ObservableProperty] public partial string Author { get; set; }
+
+        [ObservableProperty] public partial BoulderStyle Style { get; set; }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DaysLeft))]
@@ -17,22 +25,34 @@ namespace BoulderSetManager.Models.Entities
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DaysLeft))]
-        [NotifyPropertyChangedFor(nameof(RowColor))]
+        [NotifyPropertyChangedFor(nameof(RowBackgroundColor))]
         public partial DateTime RetireDate { get; set; }
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RowBackgroundColor))]
+        [NotifyPropertyChangedFor(nameof(ArchivedButtonText))]
+        public partial Status Status { get; set; }
+
+        // ============================================================
+        // Info - Additional computed info/property for UI
+        // ============================================================
+
         public int DaysLeft => (RetireDate - DateTime.Today).Days;
 
-        public Color RowColor => Status switch
+        // ============================================================
+        // Visual - properties computed purely for visualization
+        // ============================================================
+
+        /// <summary>state property deciding whether boulder is shown in the ui or not, used for filtering</summary>
+        [ObservableProperty] public partial bool IsVisible { get; set; } = true;
+
+        public Color RowBackgroundColor => Status switch
         {
             Status.Archived => Colors.Yellow.WithAlpha(0.1f),
             Status.Draft => Colors.DarkCyan.WithAlpha(0.2f),
             _ => DaysLeft <= 3 ? Colors.DarkRed.WithAlpha(0.2f) : Colors.Transparent
         };
-        [ObservableProperty] public partial bool IsVisible { get; set; } = true;
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RowColor))]
-        [NotifyPropertyChangedFor(nameof(ArchivedButtonText))]
-        public partial Status Status { get; set; }
         public string ArchivedButtonText => Status == Status.Archived ? "Unarchive" : "Archive";
     }
 }

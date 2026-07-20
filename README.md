@@ -19,9 +19,11 @@ My app is designed with their needs and perspective as the top priority for feat
 
 
 **+ plan on adding soon:**
-- archive (gym, wall, boulder)
+- archive (gym, wall, boulder) - working on right now
+- light/dark mode toggles
+- integrated json file inport/export of individual gyms and their walls and boulders
 - visual interactive map manager
-- integrated file inport/export of individual gyms and their walls and boulders
+- Azure-hosted REST API backend (ASP.NET Core + Azure SQL) for multi-device sync
 
 ## Tech Stack
 
@@ -53,7 +55,7 @@ bouldering-gym-manager/
 
 ### Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- .NET 10
 - Windows 10/11
 - Visual Studio
 
@@ -66,7 +68,7 @@ bouldering-gym-manager/
 2. Open `BoulderSetManager.sln` in Visual Studio
 3. Set `BoulderSetManager` as the startup project and select **Windows Machine** as the target
 4. Run with **F5** (will run with preseeded data)
-5. for own database management comment out OnModelCreating in DAL/GymDbContext
+5. for own database management comment out annotated section in OnModelCreating in DAL/GymDbContext and "db.Database.EnsureDeleted()" in BoulderSetManager/SelectGymViewModel.cs
 
 ## Any feedback is greatly welcomed!
 

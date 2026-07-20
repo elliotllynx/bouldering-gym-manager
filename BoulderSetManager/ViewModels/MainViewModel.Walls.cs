@@ -9,12 +9,19 @@ namespace BoulderSetManager.ViewModels
     public partial class MainViewModel
     {
         private readonly WallService _wallService = new();
+
+        // represents exact state of database at all times, filtering with wall property IsVisible not by removal from this collection
         [ObservableProperty] public partial ObservableCollection<WallDTO> Walls { get; set; } = new();
-        [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
+
+        // for ui wall crud
         [ObservableProperty] public partial WallDTO? SelectedWall { get; set; } = null;
+        [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
+
+        // error wall crud handling
         [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
         [ObservableProperty] public partial string WallInputErrorMessage { get; set; } = string.Empty;
 
+        // popup handling
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPopUpVisible))]
         public partial bool IsAddWallVisible { get; set; } = false;
@@ -43,6 +50,7 @@ namespace BoulderSetManager.ViewModels
             WallInputErrorMessage = string.Empty;
         }
 
+        // wall crud
         [RelayCommand]
         private async Task AddWall()
         {
@@ -60,12 +68,15 @@ namespace BoulderSetManager.ViewModels
             };
             wall.Id = await _wallService.CreateWall(wall);
             Walls.Add(wall);
+            // UpdateDynamicProperties(); not needed (yet) because adding wall doesnt influence boulders
             HideWallForm();
         }
 
         [RelayCommand]
         private async Task EditWall()
         {
+            if (SelectedWall is null) return; // should never happen, because ShowEditWall() always sets SelectedWall
+
             if (string.IsNullOrWhiteSpace(NewWallName))
             {
                 HasWallInputError = true;
@@ -74,8 +85,9 @@ namespace BoulderSetManager.ViewModels
             }
 
             SelectedWall.Name = NewWallName;
-            await _wallService.UpdateWall(SelectedWall);
             HideWallForm();
+            // UpdateDynamicProperties(); not needed (yet) because editing wall doesnt influence boulders
+            await _wallService.UpdateWall(SelectedWall);
         }
 
         [RelayCommand]

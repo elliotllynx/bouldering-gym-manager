@@ -55,7 +55,7 @@ namespace BoulderSetManager.Models.Services
                 await db.SaveChangesAsync();
             }
         }
-        public async Task<GymDTO> GetGym(int id)
+        public async Task<GymDTO?> GetGym(int id)
         {
             using var db = new GymDbContext();
             var gym = await db.Gyms.FindAsync(id);

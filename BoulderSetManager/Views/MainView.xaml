@@ -172,7 +172,7 @@
                                         <DataTemplate x:DataType="entities:BoulderProblemDTO">
                                             <Grid ColumnDefinitions="2*,2*,2*,2*,2*,2*,0.8*,1.2*,*"
                                                   Padding="12,2"
-                                                  BackgroundColor="{Binding RowColor}"
+                                                  BackgroundColor="{Binding RowBackgroundColor}"
                                                   IsVisible="{Binding IsVisible}">
                                                 <Label Grid.Column="0" Text="{Binding Grade}" TextColor="White"/>
                                                 <Label Grid.Column="1" Text="{Binding Style}" TextColor="White"/>

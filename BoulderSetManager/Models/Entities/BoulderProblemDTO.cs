@@ -43,7 +43,7 @@ namespace BoulderSetManager.Models.Entities
         // Visual - properties computed purely for visualization
         // ============================================================
 
-        /// <summary>state property deciding whether boulder is shown in the ui or not, used for filtering</summary>
+        // state property deciding whether boulder is shown in the ui or not, used for filtering
         [ObservableProperty] public partial bool IsVisible { get; set; } = true;
 
         public Color RowBackgroundColor => Status switch

@@ -11,12 +11,18 @@ namespace BoulderSetManager.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         [ObservableProperty] public partial int GymId { get; set; }
-        [ObservableProperty] public partial GymDTO SelectedGym { get; set; }
+        [ObservableProperty] public partial GymDTO? SelectedGym { get; set; }
         public List<Status> Loaded { get; set; } = [Status.Active, Status.Draft];
         async partial void OnGymIdChanged(int value)
         {
             var gymService = new GymService();
             SelectedGym = await gymService.GetGym(value);
+            if (SelectedGym is null)
+            {
+                await GoBack();
+                return;
+            }
+
             await InitLoadWalls(value);
             UpdateDynamicProperties();
         }

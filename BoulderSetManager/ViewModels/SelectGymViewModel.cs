@@ -10,7 +10,7 @@ namespace BoulderSetManager.ViewModels
     public partial class SelectGymViewModel : ObservableObject
     {
         private readonly GymService _gymService = new GymService();
-        [ObservableProperty] public partial ObservableCollection<GymDTO> Gyms { get; set; }
+        [ObservableProperty] public partial ObservableCollection<GymDTO> Gyms { get; set; } = new();
         [ObservableProperty] public partial GymDTO? SelectedGym { get; set; } = null;
         [ObservableProperty] public partial bool HasSelectError { get; set; } = false;
         [ObservableProperty] public partial string SelectErrorMessage { get; set; } = string.Empty;
@@ -118,6 +118,7 @@ namespace BoulderSetManager.ViewModels
         [RelayCommand]
         public async Task ModifyGym()
         {
+            if (SelectedGym is null) return;
             HasInputError = false;
             if (string.IsNullOrWhiteSpace(NewGymName)
                 && string.IsNullOrWhiteSpace(NewGymLocation))

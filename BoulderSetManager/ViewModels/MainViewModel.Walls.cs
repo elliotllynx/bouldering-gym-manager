@@ -95,9 +95,6 @@ namespace BoulderSetManager.ViewModels
         {
             await _wallService.DeleteWall(wall.Id);
             Walls.Remove(wall);
-            var filterItem = FilterWalls.Cast<WallDTO>().FirstOrDefault(fw => fw.Id == wall.Id);
-            if (filterItem != null)
-                FilterWalls.Remove(filterItem);
             UpdateDynamicProperties();
         }
     }

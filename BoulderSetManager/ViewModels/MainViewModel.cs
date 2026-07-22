@@ -12,7 +12,6 @@ namespace BoulderSetManager.ViewModels
     {
         [ObservableProperty] public partial int GymId { get; set; }
         [ObservableProperty] public partial GymDTO? SelectedGym { get; set; }
-        public List<Status> Loaded { get; set; } = [Status.Active, Status.Draft];
         async partial void OnGymIdChanged(int value)
         {
             var gymService = new GymService();
@@ -29,7 +28,7 @@ namespace BoulderSetManager.ViewModels
 
         private async Task InitLoadWalls(int gymId)
         {
-            Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId, Loaded));
+            Walls = new ObservableCollection<WallDTO>(await _wallService.GetGymWalls(gymId, _loadedStatuses));
         }
 
         [RelayCommand]

@@ -16,7 +16,9 @@ namespace BoulderSetManager.Models.Entities
 
         [ObservableProperty] public partial string Name { get; set; }
 
-        public Status Status { get; set; }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ArchiveButtonText))]
+        public partial Status Status { get; set; }
 
         [ObservableProperty] public partial ObservableCollection<BoulderProblemDTO> Boulders { get; set; } = new();
 
@@ -25,5 +27,7 @@ namespace BoulderSetManager.Models.Entities
         // ============================================================
 
         [ObservableProperty] public partial bool IsVisible { get; set; }
+        public string ArchiveButtonText => Status == Status.Archived ? "Unarchive" : "Archive";
+
     }
 }

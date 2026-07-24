@@ -8,27 +8,26 @@ using DAL.Enums;
 namespace BoulderSetManager.Models.Services
 {
     public class WallService
-    {
-        private static readonly List<Status> DefaultStatuses = [Status.Active, Status.Draft];
+    { 
+        // defaultly skips loading archived walls unless implicitly asked for
         public async Task<List<WallDTO>> GetGymWalls(int gymId, List<Status>? statuses = null)
         {
-            var selected = statuses ?? DefaultStatuses;
+            statuses ??= [Status.Active, Status.Draft]; // default load
 
             using var db = new GymDbContext();
 
             var walls = await db.Walls
-                .Where(w => w.GymId == gymId && selected.Contains(w.Status))
+                .Where(w => w.GymId == gymId && statuses.Contains(w.Status))
                 .ToListAsync();
 
-            var wallIds = walls.Select(w => w.Id).ToList();
-
+            // only 2 calls to the database needed, rest of the sorting happens outside of db calls
             var boulders = await db.BoulderingProblems
-                .Where(b => wallIds.Contains(b.WallId) && selected.Contains(b.Status))
+                .Where(b => walls.Select(w => w.Id).Contains(b.WallId) && statuses.Contains(b.Status))
                 .ToListAsync();
 
             var boultersByWall = boulders
                 .GroupBy(b => b.WallId)
-                .ToDictionary(g => g.Key, g => g.ToList());
+                .ToDictionary(g => g.Key, g => g.AsEnumerable());
 
             return walls.Select(w => new WallDTO
             {
@@ -81,10 +80,10 @@ namespace BoulderSetManager.Models.Services
                 await db.SaveChangesAsync();
             }
         }
-        public async Task DeleteWall(int wallId)
+        public async Task DeleteWall(WallDTO dto)
         {
             using var db = new GymDbContext();
-            var wall = await db.Walls.FindAsync(wallId);
+            var wall = await db.Walls.FindAsync(dto.Id);
             if (wall != null)
             {
                 db.Walls.Remove(wall);

@@ -3,6 +3,7 @@ using BoulderSetManager.Models.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using DAL.Enums;
 
 namespace BoulderSetManager.ViewModels
 {
@@ -16,6 +17,13 @@ namespace BoulderSetManager.ViewModels
         // for ui wall crud
         [ObservableProperty] public partial WallDTO? SelectedWall { get; set; } = null;
         [ObservableProperty] public partial string NewWallName { get; set; } = string.Empty;
+
+        [RelayCommand]
+        private async Task ToggleArchiveWall(WallDTO w)
+        {
+            w.Status = w.Status == Status.Archived ? Status.Active : Status.Archived;
+            await _wallService.UpdateWall(w);
+        }
 
         // error wall crud handling
         [ObservableProperty] public partial bool HasWallInputError { get; set; } = false;
@@ -93,7 +101,7 @@ namespace BoulderSetManager.ViewModels
         [RelayCommand]
         private async Task DeleteWall(WallDTO wall)
         {
-            await _wallService.DeleteWall(wall.Id);
+            await _wallService.DeleteWall(wall);
             Walls.Remove(wall);
             UpdateDynamicProperties();
         }

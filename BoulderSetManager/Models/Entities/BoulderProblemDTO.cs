@@ -30,7 +30,7 @@ namespace BoulderSetManager.Models.Entities
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RowBackgroundColor))]
-        [NotifyPropertyChangedFor(nameof(ArchivedButtonText))]
+        [NotifyPropertyChangedFor(nameof(ArchiveButtonText))]
         public partial Status Status { get; set; }
 
         // ============================================================
@@ -53,6 +53,6 @@ namespace BoulderSetManager.Models.Entities
             _ => DaysLeft <= 3 ? Colors.DarkRed.WithAlpha(0.2f) : Colors.Transparent
         };
 
-        public string ArchivedButtonText => Status == Status.Archived ? "Unarchive" : "Archive";
+        public string ArchiveButtonText => Status == Status.Archived ? "Unarchive" : "Archive";
     }
 }

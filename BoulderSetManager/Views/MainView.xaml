@@ -156,6 +156,14 @@
                                             Margin="10,0"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowEditWallCommand}"
                                             CommandParameter="{Binding .}"/>
+                                    <Button Grid.Column="2"
+                                            Text="{Binding ArchiveButtonText}"
+                                            BackgroundColor="DarkGoldenrod"
+                                            TextColor="White"
+                                            CornerRadius="6"
+                                            Margin="10,0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ToggleArchiveWallCommand}"
+                                            CommandParameter="{Binding .}"/>
                                     <Button Grid.Column="3"
                                             Text="Delete"
                                             BackgroundColor="#c0392b"
@@ -206,7 +214,7 @@
                                                     <Border.StrokeShape>
                                                         <RoundRectangle CornerRadius="6"/>
                                                     </Border.StrokeShape>
-                                                    <Label  Text="{Binding ArchivedButtonText}"
+                                                    <Label  Text="{Binding ArchiveButtonText}"
                                                             TextColor="DarkGoldenrod"
                                                             VerticalOptions="Center"
                                                             HorizontalOptions="Center"

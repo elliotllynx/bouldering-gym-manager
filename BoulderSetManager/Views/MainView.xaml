@@ -128,8 +128,8 @@
                             <VerticalStackLayout Padding="12,8" IsVisible="{Binding IsVisible}">
 
                                 <!-- Wall header -->
-                                <Border Stroke="Transparent"
-                                        StrokeThickness="0">
+                                <Border Stroke="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkAccent}}"
+                                        StrokeThickness="1">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="12,12,0,0" />
                                     </Border.StrokeShape>
@@ -148,13 +148,13 @@
                                                 CommandParameter="{Binding .}"/>
                                         <Button Grid.Column="2"
                                                 Text="Edit"
-                                                Style="{StaticResource SecondaryButton}"
+                                                Style="{StaticResource SecondaryButtonLight}"
                                                 Margin="10,0"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ShowEditWallCommand}"
                                                 CommandParameter="{Binding .}"/>
                                         <Button Grid.Column="3"
                                                 Text="{Binding ArchiveButtonText}"
-                                                BackgroundColor="DarkGoldenrod"
+                                                BackgroundColor="{StaticResource Tertiary}"
                                                 TextColor="White"
                                                 CornerRadius="6"
                                                 Margin="10,0"
@@ -162,7 +162,7 @@
                                                 CommandParameter="{Binding .}"/>
                                         <Button Grid.Column="4"
                                                 Text="Delete"
-                                                BackgroundColor="#c0392b"
+                                                BackgroundColor="{StaticResource Secondary}"
                                                 TextColor="White"
                                                 CornerRadius="6"
                                                 Margin="10,0"
@@ -212,13 +212,13 @@
                                                     <Border Grid.Column="7" 
                                                             HeightRequest="30"
                                                             VerticalOptions="Center"
-                                                            Stroke="DarkGoldenrod"
+                                                            Stroke="{StaticResource Tertiary}"
                                                             Margin="0,0,10,0">
                                                         <Border.StrokeShape>
                                                             <RoundRectangle CornerRadius="6"/>
                                                         </Border.StrokeShape>
                                                         <Label  Text="{Binding ArchiveButtonText}"
-                                                                TextColor="DarkGoldenrod"
+                                                                TextColor="{StaticResource Tertiary}"
                                                                 VerticalOptions="Center"
                                                                 HorizontalOptions="Center"
                                                                 Padding="10,0">
@@ -231,13 +231,13 @@
                                                     <Border Grid.Column="8" 
                                                             HeightRequest="30"
                                                             VerticalOptions="Center"
-                                                            Stroke="#c0392b"
+                                                            Stroke="{StaticResource Secondary}"
                                                             Margin="0,0,10,0">
                                                         <Border.StrokeShape>
                                                             <RoundRectangle CornerRadius="6"/>
                                                         </Border.StrokeShape>
                                                         <Label  Text="Delete"
-                                                                TextColor="#c0392b"
+                                                                TextColor="{StaticResource Secondary}"
                                                                 VerticalOptions="Center"
                                                                 HorizontalOptions="Center"
                                                                 Padding="10,0">
@@ -287,11 +287,11 @@
                            FontSize="20"
                            VerticalOptions="Center"
                            Padding="5,0,15,0"/>
-                    <BoxView Color="Turquoise" WidthRequest="14" HeightRequest="14" VerticalOptions="Center" Margin="5,0"/>
+                    <BoxView Color="{StaticResource Primary}" WidthRequest="14" HeightRequest="14" VerticalOptions="Center" Margin="5,0"/>
                     <Label Text="Slab" FontSize="12" VerticalOptions="Center"/>
-                    <BoxView Color="DarkGoldenrod" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
+                    <BoxView Color="{StaticResource Tertiary}" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
                     <Label Text="Vertical" FontSize="12" VerticalOptions="Center"/>
-                    <BoxView Color="#c0392b" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
+                    <BoxView Color="{StaticResource Secondary}" WidthRequest="14" HeightRequest="14" VerticalOptions="Center"  Margin="5,0"/>
                     <Label Text="Overhang" FontSize="12" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </Grid>

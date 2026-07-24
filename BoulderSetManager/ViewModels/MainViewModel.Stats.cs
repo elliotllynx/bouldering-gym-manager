@@ -7,6 +7,7 @@ namespace BoulderSetManager.ViewModels
     public partial class MainViewModel
     {
         [ObservableProperty] public partial PieChart? StyleChart { get; set; }
+        private readonly ChartBuilder _chartBuilder = new();
         public string AverageGrade
         {
             get
@@ -35,7 +36,7 @@ namespace BoulderSetManager.ViewModels
 
         private void UpdateStyleChart()
         {
-            StyleChart = ChartBuilder.BuildStyleChart(Walls.SelectMany(w => w.Boulders));
+            StyleChart = _chartBuilder.BuildStyleChart(Walls.SelectMany(w => w.Boulders));
         }
     }
 }

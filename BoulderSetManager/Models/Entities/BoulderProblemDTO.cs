@@ -48,8 +48,8 @@ namespace BoulderSetManager.Models.Entities
 
         public Color RowBackgroundColor => Status switch
         {
-            Status.Archived => Colors.DarkGoldenrod.WithAlpha(0.2f),
-            Status.Draft => Colors.DarkCyan.WithAlpha(0.2f),
+            Status.Archived => ((Color)Application.Current!.Resources["Tertiary"]).WithAlpha(0.2f),
+            Status.Draft => ((Color)Application.Current!.Resources["Secondary"]).WithAlpha(0.2f),
             _ => DaysLeft <= 3 ? Colors.DarkRed.WithAlpha(0.2f) : Colors.Transparent
         };
         public string ArchiveButtonText => Status == Status.Archived ? "Unarchive" : "Archive";

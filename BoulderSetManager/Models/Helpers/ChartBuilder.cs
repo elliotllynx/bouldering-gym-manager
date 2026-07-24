@@ -2,12 +2,17 @@
 using DAL.Enums;
 using Microcharts;
 using SkiaSharp;
+using SkiaSharp.Views.Maui;
 
 namespace BoulderSetManager.Models.Helpers
 {
-    public static class ChartBuilder
+    public class ChartBuilder
     {
-        public static PieChart? BuildStyleChart(IEnumerable<BoulderProblemDTO> boulders)
+        private readonly Color _primary = (Color)Application.Current!.Resources["Primary"];
+        private readonly Color _secondary = (Color)Application.Current!.Resources["Secondary"];
+        private readonly Color _tertiary = (Color)Application.Current!.Resources["Tertiary"];
+
+        public PieChart? BuildStyleChart(IEnumerable<BoulderProblemDTO> boulders)
         {
             var data = boulders.GroupBy(b => b.Style);
             var entries = new List<ChartEntry>();
@@ -16,7 +21,7 @@ namespace BoulderSetManager.Models.Helpers
             {
                 entries.Add(new ChartEntry(group.Count())
                 {
-                    Color = SKColor.Parse(GetColorForStyle(group.Key))
+                    Color = GetColorForStyle(group.Key).ToSKColor()
                 });
             }
 
@@ -33,12 +38,12 @@ namespace BoulderSetManager.Models.Helpers
             };
         }
 
-        private static string GetColorForStyle(BoulderStyle style) => style switch
+        private Color GetColorForStyle(BoulderStyle style) => style switch
         {
-            BoulderStyle.Slab => "#40E0D0",
-            BoulderStyle.Vertical => "#B8860B",
-            BoulderStyle.Overhang => "#c0392b",
-            _ => "#000000"           // Black
+            BoulderStyle.Slab => _primary,
+            BoulderStyle.Vertical => _tertiary,
+            BoulderStyle.Overhang => _secondary,
+            _ => Colors.Black
         };
     }
 }

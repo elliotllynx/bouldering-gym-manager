@@ -5,11 +5,11 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
+    <Color x:Key="Primary">Turquoise</Color>
+    <Color x:Key="PrimaryDark">Turquoise</Color>
     <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
+    <Color x:Key="Secondary">LightCyan</Color>
+    <Color x:Key="SecondaryDarkText">MediumTurquoise</Color>
     <Color x:Key="Tertiary">#2B0B98</Color>
 
     <Color x:Key="White">White</Color>
@@ -26,6 +26,15 @@
     <Color x:Key="Gray600">#404040</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
+
+    <Color x:Key="DarkAccent">#2a2a2a</Color>
+    <Color x:Key="LightAccent">#e8e8e8</Color>
+
+    <Color x:Key="Archive">Gold</Color>
+    <Color x:Key="ArchiveDark">DarkGoldenrod</Color>
+
+    <Color x:Key="Warning">IndianRed</Color>
+    <Color x:Key="WarningDark">Red</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>

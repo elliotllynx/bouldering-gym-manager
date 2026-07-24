@@ -19,33 +19,25 @@
             <Label Text="Select Gym:"
                    FontSize="18"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="White" />
+                   HorizontalOptions="Center" />
             <Picker ItemsSource="{Binding Gyms}"
                     SelectedItem="{Binding SelectedGym}"
-                    ItemDisplayBinding="{Binding DisplayName}"
-                    TextColor="White" />
+                    ItemDisplayBinding="{Binding DisplayName}" />
             <Button Text="Select Gym"
-                    BackgroundColor="Turquoise"
-                    TextColor="Black"
                     CornerRadius="8"
                     Command="{Binding SelectGymCommand}" />
             <Button Text="Delete Gym"
-                    BackgroundColor="Turquoise"
-                    TextColor="Black"
-                    CornerRadius="8"
+                    Style="{StaticResource SecondaryButton}"
                     Command="{Binding DeleteGymCommand}" />
             <Button Text="Modify Gym"
-                    BackgroundColor="Turquoise"
-                    TextColor="Black"
+                    Style="{StaticResource SecondaryButton}"
                     CornerRadius="8"
                     Command="{Binding ShowModifyFormCommand}" />
             <Button Text="Create New Gym"
-                    BackgroundColor="LightGray"
-                    TextColor="Black"
+                    Style="{StaticResource SecondaryButton}"
                     CornerRadius="8"
                     Command="{Binding ShowCreateFormCommand}" />
-            <Label IsVisible="{Binding HasSelectError}" Text="{Binding SelectErrorMessage}" TextColor="Red"></Label>
+            <Label IsVisible="{Binding HasSelectError}" Text="{Binding SelectErrorMessage}" Style="{StaticResource ErrorText}"></Label>
         </VerticalStackLayout>
 
 
@@ -58,7 +50,7 @@
                HorizontalOptions="Center"
                WidthRequest="300"
                Padding="24"
-               BackgroundColor="White"
+               BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
                StrokeThickness="0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="12" />
@@ -67,23 +59,20 @@
                 <Label Text="Create New Gym"
                        FontSize="18"
                        FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       TextColor="Black"/>
+                       HorizontalOptions="Center"/>
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
-                    <Label Grid.Row="0" Grid.Column="0" Text="Gym Name:" TextColor="Black" VerticalOptions="Center"/>
-                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Gym name" TextColor="Black" Text="{Binding NewGymName}" />
+                    <Label Grid.Row="0" Grid.Column="0" Text="Gym Name:" VerticalOptions="Center"/>
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Gym name"  Text="{Binding NewGymName}" />
 
-                    <Label Grid.Row="1" Grid.Column="0" Text="Gym Location:" TextColor="Black" VerticalOptions="Center"/>
-                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Location" TextColor="Black" Text="{Binding NewGymLocation}" />
+                    <Label Grid.Row="1" Grid.Column="0" Text="Gym Location:" VerticalOptions="Center"/>
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Location" Text="{Binding NewGymLocation}" />
                 </Grid>
                 <Button Text="Create Gym"
-                        BackgroundColor="Turquoise"
                         Command="{Binding CreateGymCommand}" />
                 <Button Text="Cancel"
-                        BackgroundColor="Transparent"
-                        TextColor="Gray"
+                        Style="{StaticResource SecondaryButton}"
                         Command="{Binding HideFormCommand}" />
-                <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" TextColor="DarkRed"></Label>
+                <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" Style="{StaticResource ErrorText}"></Label>
             </VerticalStackLayout>
         </Border>
 
@@ -92,7 +81,7 @@
                HorizontalOptions="Center"
                WidthRequest="300"
                Padding="24"
-               BackgroundColor="White"
+               BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
                StrokeThickness="0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="12" />
@@ -101,23 +90,20 @@
                 <Label Text="Modify Gym"
                        FontSize="18"
                        FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       TextColor="Black"/>
+                       HorizontalOptions="Center"/>
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
-                    <Label Grid.Row="0" Grid.Column="0" Text="Gym Name:" TextColor="Black" VerticalOptions="Center"/>
-                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="{Binding SelectedGym.Name}" TextColor="Black" Text="{Binding NewGymName}" />
+                    <Label Grid.Row="0" Grid.Column="0" Text="Gym Name:" VerticalOptions="Center"/>
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="{Binding SelectedGym.Name}" Text="{Binding NewGymName}" />
 
                     <Label Grid.Row="1" Grid.Column="0" Text="Gym Location:" TextColor="Black" VerticalOptions="Center"/>
-                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="{Binding SelectedGym.Location}" TextColor="Black" Text="{Binding NewGymLocation}" />
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="{Binding SelectedGym.Location}" Text="{Binding NewGymLocation}" />
                 </Grid>
                 <Button Text="Modify Gym"
-                        BackgroundColor="Turquoise"
                         Command="{Binding ModifyGymCommand}" />
                 <Button Text="Cancel"
-                        BackgroundColor="Transparent"
-                        TextColor="Gray"
+                        Style="{StaticResource SecondaryButton}"
                         Command="{Binding HideFormCommand}" />
-                <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" TextColor="DarkRed"></Label>
+                <Label IsVisible="{Binding HasInputError}" Text="{Binding InputErrorMessage}" Style="{StaticResource ErrorText}"></Label>
             </VerticalStackLayout>
         </Border>
     </Grid>

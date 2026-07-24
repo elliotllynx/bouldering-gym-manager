@@ -35,9 +35,9 @@ namespace BoulderSetManager.Models.Helpers
 
         private static string GetColorForStyle(BoulderStyle style) => style switch
         {
-            BoulderStyle.Slab => "#00FFFF",     // Cyan
-            BoulderStyle.Vertical => "#FF00FF", // Magenta
-            BoulderStyle.Overhang => "#FFFF00", // Yellow
+            BoulderStyle.Slab => "#40E0D0",
+            BoulderStyle.Vertical => "#B8860B",
+            BoulderStyle.Overhang => "#c0392b",
             _ => "#000000"           // Black
         };
     }

@@ -52,7 +52,6 @@ namespace BoulderSetManager.Models.Entities
             Status.Draft => Colors.DarkCyan.WithAlpha(0.2f),
             _ => DaysLeft <= 3 ? Colors.DarkRed.WithAlpha(0.2f) : Colors.Transparent
         };
-
         public string ArchiveButtonText => Status == Status.Archived ? "Unarchive" : "Archive";
     }
 }

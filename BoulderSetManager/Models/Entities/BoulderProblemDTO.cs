@@ -48,7 +48,7 @@ namespace BoulderSetManager.Models.Entities
 
         public Color RowBackgroundColor => Status switch
         {
-            Status.Archived => Colors.Yellow.WithAlpha(0.1f),
+            Status.Archived => Colors.DarkGoldenrod.WithAlpha(0.2f),
             Status.Draft => Colors.DarkCyan.WithAlpha(0.2f),
             _ => DaysLeft <= 3 ? Colors.DarkRed.WithAlpha(0.2f) : Colors.Transparent
         };

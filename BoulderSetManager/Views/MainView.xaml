@@ -298,15 +298,24 @@
 
             <!-- Row 6: Add wall button -->
             <Grid Grid.Row="6"
-                  Grid.ColumnDefinitions="Auto,*">
-            <Button Grid.Column="0"
+                  ColumnDefinitions="*,Auto">
+                <Button Grid.Column="0"
                     Text="+ Add Wall"
                     CornerRadius="8"
                     Margin="16"
                     WidthRequest="200"
                     HorizontalOptions="Start"
                     Command="{Binding ShowAddWallCommand}"/>
-                <Switch Grid.Column="1" IsToggled="{Binding IsDarkMode}"/>
+                <HorizontalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="End">
+                    <Label Text="Mode:"
+                           VerticalOptions="Center"
+                           Padding="15,0"></Label>
+                    <Switch Margin="0"
+                        IsToggled="{Binding IsDarkMode}"/>
+                </HorizontalStackLayout>
+                
             </Grid>
         </Grid>
 
